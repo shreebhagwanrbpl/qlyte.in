@@ -11,6 +11,7 @@ import {
   PackageCheck,
   ChevronDown,
   ChevronRight,
+  Search,
 } from "lucide-react";
 
 import PageBanner from "@/components/PageBanner";

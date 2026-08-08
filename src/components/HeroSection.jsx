@@ -31,7 +31,7 @@ export default function HeroSection({ city }) {
     const fetchHeroData = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "centralbiomedicals", "pages", "home")
+          doc(db, "websites", "qlytein", "pages", "home")
         );
 
         if (snap.exists()) {

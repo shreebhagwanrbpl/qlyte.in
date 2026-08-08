@@ -45,7 +45,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "qlytein",
             "pages",
             "contact"
           )
@@ -76,7 +76,7 @@ export default function Footer() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "qlytein",
             "districts",
             district
           )
@@ -338,7 +338,7 @@ export default function Footer() {
 
           <p>
 
-            © 2026 Central Biomedicals. All Rights Reserved.
+            © 2026 Raj Biosis. All Rights Reserved.
 
           </p>
 

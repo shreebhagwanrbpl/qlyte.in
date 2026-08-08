@@ -9,7 +9,7 @@ export default function AboutPage() {
     <>
       {/* Banner */}
       <PageBanner
-        title="About Central Biomedicals"
+        title="About Raj Biosis"
         subtitle="Delivering trusted diagnostic and biomedical technologies with innovation, quality, and healthcare precision."
       />
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
 
             <p className="mt-8 text-lg leading-9 text-slate-600">
 
-              At Central Biomedicals, we are committed to delivering
+              At Raj Biosis, we are committed to delivering
               premium-quality healthcare and biomedical technologies
               designed to improve diagnostics, laboratory performance
               and medical efficiency for hospitals, pathology labs and

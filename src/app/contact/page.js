@@ -85,7 +85,7 @@ export default function ContactPage() {
         collection(
           db,
           "websitesQueries",
-          "centralbiomedicals",
+          "qlytein",
           "contactQueries"
         ),
         {
@@ -130,7 +130,7 @@ export default function ContactPage() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "qlytein",
             "districts",
             currentDistrict
           )
@@ -153,7 +153,7 @@ export default function ContactPage() {
           doc(
             db,
             "websites",
-            "centralbiomedicals",
+            "qlytein",
             "pages",
             "contact"
           )
@@ -242,7 +242,7 @@ export default function ContactPage() {
       {/* Banner */}
       <PageBanner
         title="Contact Us"
-        subtitle="Get in touch with Central Biomedicals for premium diagnostic and biomedical solutions."
+        subtitle="Get in touch with Raj Biosis for premium diagnostic and biomedical solutions."
       />
 
       {/* Contact Section */}

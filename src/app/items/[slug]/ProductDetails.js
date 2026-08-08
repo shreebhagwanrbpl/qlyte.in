@@ -69,7 +69,7 @@ export default function ProductDetails({ slug }) {
                     doc(
                         db,
                         "websites",
-                        "centralbiomedicals",
+                        "qlytein",
                         "pages",
                         "products"
                     )
@@ -92,7 +92,7 @@ export default function ProductDetails({ slug }) {
                     collection(
                         db,
                         "websites",
-                        "centralbiomedicals",
+                        "qlytein",
                         "pages",
                         "categoryproducts",
                         "categories"
@@ -193,7 +193,7 @@ export default function ProductDetails({ slug }) {
                 collection(
                     db,
                     "websitesQueries",
-                    "centralbiomedicals",
+                    "qlytein",
                     "productQueries"
                 ),
                 {
@@ -236,7 +236,7 @@ export default function ProductDetails({ slug }) {
                 product.title,
             brand: {
                 "@type": "Brand",
-                name: product.brand || "Central Biomedicals",
+                name: product.brand || "Raj Biosis",
             },
         }
         : null;
@@ -962,8 +962,8 @@ ${product?.desc}
 
                                     {[
                                         {
-                                            title: `Why Choose Central Biomedicals in ${cityName}?`,
-                                            text: `Central Biomedicals is a trusted supplier and distributor of ${product.title} in ${cityName}. We provide high-quality biomedical and laboratory equipment for hospitals, pathology laboratories, diagnostic centres and healthcare facilities.`,
+                                            title: `Why Choose Raj Biosis in ${cityName}?`,
+                                            text: `Raj Biosis is a trusted supplier and distributor of ${product.title} in ${cityName}. We provide high-quality biomedical and laboratory equipment for hospitals, pathology laboratories, diagnostic centres and healthcare facilities.`,
                                         },
                                         {
                                             title: `Features of ${product.title}`,
@@ -975,11 +975,11 @@ ${product?.desc}
                                         },
                                         {
                                             title: `${product.title} Supplier in ${cityName}`,
-                                            text: `Central Biomedicals supplies ${product.title} in ${cityName} with technical support, installation assistance and customer service for hospitals and laboratories.`,
+                                            text: `Raj Biosis supplies ${product.title} in ${cityName} with technical support, installation assistance and customer service for hospitals and laboratories.`,
                                         },
                                         {
                                             title: `${product.title} Dealer in ${cityName}`,
-                                            text: `Central Biomedicals is a trusted dealer of ${product.title} in ${cityName}. We supply biomedical equipment, laboratory instruments, diagnostic analyzers and healthcare devices.`,
+                                            text: `Raj Biosis is a trusted dealer of ${product.title} in ${cityName}. We supply biomedical equipment, laboratory instruments, diagnostic analyzers and healthcare devices.`,
                                         },
                                         {
                                             title: `${product.title} Distributor in ${cityName}`,
@@ -987,7 +987,7 @@ ${product?.desc}
                                         },
                                         {
                                             title: `Buy ${product.title} in ${cityName}`,
-                                            text: `Buy high-quality ${product.title} in ${cityName} at competitive prices. Contact Central Biomedicals for the latest quotation and product availability.`,
+                                            text: `Buy high-quality ${product.title} in ${cityName} at competitive prices. Contact Raj Biosis for the latest quotation and product availability.`,
                                         },
                                         {
                                             title: `${product.title} Price in ${cityName}`,
@@ -1082,7 +1082,7 @@ ${product?.desc}
                                             a: "Yes. We provide safe packaging and reliable logistics support across India.",
                                         },
                                         {
-                                            q: "How can I contact Central Biomedicals?",
+                                            q: "How can I contact Raj Biosis?",
                                             a: "You can fill out the enquiry form or contact our team directly for quotations and technical assistance.",
                                         },
                                     ].map((item, index) => (
