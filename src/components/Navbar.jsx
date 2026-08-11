@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -52,23 +53,20 @@ export default function Navbar() {
 
         {/* Logo */}
 
-        <Link href={makeLink("/")}>
+        <Link href={makeLink("/")} className="flex items-center gap-3 group">
 
-          <h1 className="text-2xl font-black tracking-tight">
+          <div className="relative h-14 w-auto shrink-0 transition group-hover:scale-105">
 
-            <span className="text-[#C89200]">
+            <Image
+              src="/logo.png"
+              alt="Raj Biosis Private Limited"
+              width={160}
+              height={56}
+              priority
+              className="h-14 w-auto object-contain drop-shadow-sm"
+            />
 
-              Central
-
-            </span>
-
-            <span className="text-[#1E293B]">
-
-              {" "}Biomedicals
-
-            </span>
-
-          </h1>
+          </div>
 
         </Link>
 

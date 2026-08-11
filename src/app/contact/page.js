@@ -176,15 +176,19 @@ export default function ContactPage() {
 
 
 
-  const phone =
-    contactInfo.find(
-      (x) => x.label === "Phone Number"
-    )?.value || "";
+  const rawPhone = contactInfo.find(
+    (x) => x.label === "Phone Number"
+  )?.value;
+
+  const phone = rawPhone && rawPhone.trim() ? rawPhone : "9983123469";
+  const displayPhone = "+91 9983123469";
 
   const email =
     contactInfo.find(
       (x) => x.label === "Email Address"
     )?.value || "";
+
+  const displayEmail = email && email.trim() ? email : "rajbiosis@yahoo.in";
 
   const address =
     contactInfo.find(
@@ -196,10 +200,12 @@ export default function ContactPage() {
       (x) => x.label === "Working Hours"
     )?.value || "";
 
+  const defaultAddress = "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, on Ajmer-Delhi, 200 Feet Bypass Rd, Jaipur, Rajasthan 302021";
+
   const dynamicAddress =
     districtData
       ? `${districtData.district}, ${districtData.state}, India`
-      : address;
+      : (address && address.trim() ? address : defaultAddress);
 
   const mapAddress = encodeURIComponent(
     dynamicAddress
@@ -278,22 +284,26 @@ export default function ContactPage() {
                 {
                   icon: <Phone size={24} />,
                   title: "Phone Number",
-                  value: phone,
+                  value: displayPhone,
+                  href: "tel:+919983123469",
                 },
                 {
                   icon: <Mail size={24} />,
                   title: "Email Address",
-                  value: email,
+                  value: displayEmail,
+                  href: `mailto:${displayEmail}`,
                 },
                 {
                   icon: <MapPin size={24} />,
                   title: "Office Address",
                   value: dynamicAddress,
+                  href: null,
                 },
                 {
                   icon: <Clock3 size={24} />,
                   title: "Working Hours",
                   value: hours,
+                  href: null,
                 },
               ].map((item, index) => (
 
@@ -332,11 +342,22 @@ export default function ContactPage() {
 
                       <div className="mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-[#B88700] to-[#F4C542] transition-all duration-500 group-hover:w-20" />
 
-                      <p className="mt-4 leading-7 text-slate-600 break-words">
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          className="mt-4 block leading-7 font-semibold text-[#B88700] hover:underline break-words"
+                        >
 
-                        {item.value}
+                          {item.value}
 
-                      </p>
+                        </a>
+                      ) : (
+                        <p className="mt-4 leading-7 text-slate-600 break-words">
+
+                          {item.value}
+
+                        </p>
+                      )}
 
                     </div>
 

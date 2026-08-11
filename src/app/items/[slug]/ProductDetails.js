@@ -23,14 +23,19 @@ import {
     collection,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { downloadProductBrochure } from "@/lib/brochure-generator";
+
 const makeSlug = (text = "") =>
     text
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-");
+
 export default function ProductDetails({ slug }) {
     const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [selectedImage, setSelectedImage] = useState("");
     const [selectedMedia, setSelectedMedia] = useState("image");
@@ -43,8 +48,7 @@ export default function ProductDetails({ slug }) {
         phone: "",
     });
 
-    const [submitting, setSubmitting] =
-        useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const pathname = usePathname();
 
     const pathParts = pathname
@@ -61,104 +65,59 @@ export default function ProductDetails({ slug }) {
         city.slice(1);
 
     useEffect(() => {
+        let isMounted = true;
+
         const loadProduct = async () => {
             try {
+                setLoading(true);
+                const allProducts = await fetchFullCatalog();
 
-                // NORMAL PRODUCTS
-                const snap = await getDoc(
-                    doc(
-                        db,
-                        "websites",
-                        "qlytein",
-                        "pages",
-                        "products"
-                    )
-                );
+                if (!isMounted) return;
 
-                let allProducts = [];
+                const targetSlug = decodeURIComponent(slug || "").toLowerCase().trim();
 
-                if (snap.exists()) {
-                    allProducts = (snap.data().products || []).map((item) => ({
-                        ...item,
-                        slug:
-                            item.slug ||
-                            item.productSlug ||
-                            makeSlug(item.title),
-                    }));
-                }
-
-                // CATEGORY PRODUCTS
-                const categorySnap = await getDocs(
-                    collection(
-                        db,
-                        "websites",
-                        "qlytein",
-                        "pages",
-                        "categoryproducts",
-                        "categories"
-                    )
-                );
-
-                categorySnap.forEach((docSnap) => {
-                    const data = docSnap.data();
-
-                    if (data.products?.length) {
-                        allProducts.push(
-                            ...(data.products || []).map((item) => ({
-                                ...item,
-                                slug:
-                                    item.slug ||
-                                    item.productSlug ||
-                                    makeSlug(item.title),
-                            }))
-                        );
-                    }
+                const found = allProducts.find((p) => {
+                    const pSlug = (p.slug || p.productSlug || makeSlug(p.title || "")).toLowerCase().trim();
+                    const pTitleSlug = makeSlug(p.title || "").toLowerCase().trim();
+                    return (
+                        pSlug === targetSlug ||
+                        pTitleSlug === targetSlug ||
+                        String(p.id || "").toLowerCase() === targetSlug ||
+                        String(p.uid || "").toLowerCase() === targetSlug
+                    );
                 });
 
-                const found = allProducts.find(
-                    (p) => p.slug === slug
-                );
                 console.log("URL SLUG:", slug);
-
-                allProducts.forEach((p) => {
-                    console.log("PRODUCT:", p.title);
-                    console.log("PRODUCT SLUG:", p.slug);
-                });
-                console.log("SLUG FROM URL:", slug);
-                console.log(
-                    "TOTAL PRODUCTS:",
-                    allProducts.length
-                );
-                console.log(
-                    "FOUND PRODUCT:",
-                    found
-                );
+                console.log("TOTAL PRODUCTS:", allProducts.length);
+                console.log("FOUND PRODUCT:", found);
 
                 setProduct(found || null);
 
                 if (found) {
-
-                    if (
-                        found.images?.length > 0
-                    ) {
-                        setSelectedImage(
-                            found.images[0]
-                        );
+                    if (found.images?.length > 0) {
+                        setSelectedImage(found.images[0]);
                     } else {
-                        setSelectedImage(
-                            found.image || ""
-                        );
+                        setSelectedImage(found.image || "");
                     }
-
                     setSelectedMedia("image");
                 }
-
             } catch (error) {
-                console.error(error);
+                console.error("Error loading product:", error);
+                if (isMounted) setProduct(null);
+            } finally {
+                if (isMounted) setLoading(false);
             }
         };
 
-        loadProduct();
+        if (slug) {
+            loadProduct();
+        } else {
+            setLoading(false);
+        }
+
+        return () => {
+            isMounted = false;
+        };
     }, [slug]);
 
     const handleSubmit = async (e) => {
@@ -327,18 +286,14 @@ ${product?.desc}
             document.removeEventListener("mousedown", close);
     }, []);
 
-    if (!product) {
+    if (loading) {
         return (
             <section className="py-10 md:py-20 bg-slate-50">
                 <div className="container-custom">
-
                     <div className="grid lg:grid-cols-2 gap-12">
-
                         <div className="h-[420px] md:h-[520px] rounded-[36px] bg-slate-200 animate-pulse" />
-
                         <div>
                             <div className="h-12 w-3/4 bg-slate-200 rounded-xl animate-pulse mb-8" />
-
                             {[...Array(8)].map((_, i) => (
                                 <div
                                     key={i}
@@ -346,14 +301,10 @@ ${product?.desc}
                                 />
                             ))}
                         </div>
-
                     </div>
-
                     <div className="mt-16 grid lg:grid-cols-[600px_1fr] gap-8">
-
                         <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 sm:p-6 md:p-8 shadow-sm">
                             <div className="h-10 w-48 bg-slate-200 rounded-lg animate-pulse mb-6" />
-
                             {[...Array(4)].map((_, i) => (
                                 <div
                                     key={i}
@@ -361,10 +312,8 @@ ${product?.desc}
                                 />
                             ))}
                         </div>
-
                         <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 sm:p-6 md:p-8 shadow-sm">
                             <div className="h-10 w-60 bg-slate-200 rounded-lg animate-pulse mb-6" />
-
                             {[...Array(6)].map((_, i) => (
                                 <div
                                     key={i}
@@ -372,13 +321,42 @@ ${product?.desc}
                                 />
                             ))}
                         </div>
-
                     </div>
-
                 </div>
             </section>
         );
     }
+
+    if (!product) {
+        return (
+            <section className="py-16 md:py-24 bg-slate-50">
+                <div className="container-custom max-w-xl mx-auto px-4 text-center">
+                    <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-md border border-slate-200">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center text-[#B88700] text-3xl font-bold">
+                            🔍
+                        </div>
+                        <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-3">
+                            Product Not Found
+                        </h1>
+                        <p className="text-slate-600 mb-8 leading-relaxed">
+                            The requested product could not be found or may have been updated.
+                        </p>
+                        <a
+                            href="/items"
+                            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] font-semibold text-white shadow-md hover:shadow-lg transition"
+                        >
+                            Browse All Products
+                        </a>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    const primaryImage = selectedImage || product.image || "/placeholder.svg";
+    const imageList = (product.images?.length ? product.images : [product.image]).filter(Boolean);
+    const validImages = imageList.length ? imageList : ["/placeholder.svg"];
+
     return (
         <section className="py-10 md:py-20 bg-slate-50">
             <script
@@ -444,8 +422,8 @@ ${product?.desc}
                                         )}
 
                                         <Image
-                                            src={selectedImage || product.image}
-                                            alt={product.title}
+                                            src={primaryImage}
+                                            alt={product.title || "Product"}
                                             fill
                                             priority
                                             onLoad={() => setImageLoaded(true)}
@@ -468,10 +446,7 @@ ${product?.desc}
 
                         <div className="mt-6 flex flex-wrap gap-4">
 
-                            {(product.images?.length
-                                ? product.images
-                                : [product.image]
-                            ).map((img, index) => (
+                            {validImages.map((img, index) => (
 
                                 <button
                                     key={index}
@@ -482,7 +457,7 @@ ${product?.desc}
                                     className={`group relative h-24 w-24 overflow-hidden rounded-2xl border-2 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl
 
         ${selectedMedia === "image" &&
-                                            selectedImage === img
+                                            (selectedImage || primaryImage) === img
                                             ? "border-[#D4A017] ring-4 ring-[#F4C542]/20"
                                             : "border-[#F4C542]/20 hover:border-[#D4A017]/50"
                                         }
@@ -547,32 +522,26 @@ ${product?.desc}
 
                             )}
 
-                            {/* PDF */}
+                            {/* PDF / Brochure Tile */}
 
-                            {product.pdf && (
+                            <button
+                                onClick={() => downloadProductBrochure(product)}
+                                className="group flex h-24 w-24 flex-col items-center justify-center rounded-2xl border border-[#F4C542]/20 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A017]/50 hover:shadow-xl"
+                            >
 
-                                <a
-                                    href={product.pdf}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex h-24 w-24 flex-col items-center justify-center rounded-2xl border border-[#F4C542]/20 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A017]/50 hover:shadow-xl"
-                                >
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FEF3C7] text-xl transition group-hover:scale-110">
 
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FEF3C7] text-xl">
+                                    📄
 
-                                        📄
+                                </div>
 
-                                    </div>
+                                <span className="mt-2 text-xs font-semibold text-[#1E293B]">
 
-                                    <span className="mt-2 text-xs font-semibold text-[#1E293B]">
+                                    Brochure
 
-                                        PDF
+                                </span>
 
-                                    </span>
-
-                                </a>
-
-                            )}
+                            </button>
 
                         </div>
 
@@ -599,6 +568,35 @@ ${product?.desc}
                                     {product.title}
 
                                 </h1>
+
+                                {/* Download Brochure Button & Call Link */}
+                                <div className="mt-6 flex flex-wrap items-center gap-4">
+
+                                    <button
+                                        onClick={() => downloadProductBrochure(product)}
+                                        className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] px-6 py-3.5 font-semibold text-white shadow-[0_10px_30px_rgba(212,175,55,.35)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_15px_40px_rgba(212,175,55,.45)]"
+                                    >
+
+                                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20 text-lg transition-transform group-hover:scale-110">
+
+                                            📄
+
+                                        </span>
+
+                                        <span>Download Brochure</span>
+
+                                    </button>
+
+                                    <a
+                                        href="tel:+919983123469"
+                                        className="inline-flex items-center gap-3 rounded-2xl border border-[#D4A017]/30 bg-white px-6 py-3.5 font-semibold text-[#1E293B] shadow-sm transition-all duration-300 hover:bg-[#FEF3C7] hover:border-[#D4A017]"
+                                    >
+
+                                        <span>📞 Call Us: +91 9983123469</span>
+
+                                    </a>
+
+                                </div>
 
                             </div>
 

@@ -7,11 +7,12 @@ export async function generateMetadata({ params }) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
   const url = `https://qlyte.in/${district}`;
+  const title = `Biomedical & Laboratory Equipment Supplier in ${districtName} | Rajbiosis Private Limited`;
+  const description = `Rajbiosis Private Limited is the leading biomedical and laboratory diagnostic equipment supplier, dealer and distributor in ${districtName}. Offering CBC Machines, Hematology Analyzers, Biochemistry Analyzers & Hospital Equipment.`;
 
   return {
-    title: `Biomedical & Diagnostic Equipment Supplier in ${districtName} | Central Biomedical`,
-
-    description: `Central Biomedical supplies diagnostic machines, laboratory equipment, reagents and biomedical products in ${districtName}.`,
+    title,
+    description,
 
     keywords: [
       `Biomedical Equipment ${districtName}`,
@@ -19,11 +20,22 @@ export async function generateMetadata({ params }) {
       `Laboratory Equipment ${districtName}`,
       `Pathology Equipment ${districtName}`,
       `Biomedical Supplier ${districtName}`,
+      `CBC Machine Price ${districtName}`,
+      `Biochemistry Analyzer Dealer ${districtName}`,
+      `Medical Equipment AMC ${districtName}`,
+      `Rajbiosis Private Limited ${districtName}`,
     ],
 
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
 
     alternates: {
@@ -31,14 +43,50 @@ export async function generateMetadata({ params }) {
     },
 
     openGraph: {
-      title: `Biomedical Equipment in ${districtName}`,
-      description: `Diagnostic laboratory equipment supplier in ${districtName}.`,
+      title,
+      description,
       url,
+      siteName: "Rajbiosis Private Limited",
       type: "website",
     },
   };
 }
 
-export default function DistrictLayout({ children }) {
-  return children;
+export default async function DistrictLayout({ children, params }) {
+  const { district = "jaipur" } = await params;
+
+  const districtName = district
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const districtSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": `Rajbiosis Private Limited - ${districtName}`,
+    "url": `https://qlyte.in/${district}`,
+    "telephone": "+91-9983123469",
+    "email": "rajbiosis@yahoo.in",
+    "description": `Biomedical and pathology laboratory diagnostic equipment supplier in ${districtName}.`,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": districtName,
+      "addressRegion": "Rajasthan",
+      "addressCountry": "IN"
+    },
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "Rajbiosis Private Limited",
+      "url": "https://qlyte.in"
+    }
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(districtSchema) }}
+      />
+      {children}
+    </>
+  );
 }

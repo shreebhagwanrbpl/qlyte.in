@@ -204,11 +204,11 @@ export default function CTASection({ city }) {
                   </Link>
 
                   <a
-                    href="tel:+919876543210"
+                    href="tel:+919983123469"
                     className="flex w-full items-center justify-center rounded-2xl border border-[#D4A017]/30 bg-white px-6 py-4 font-semibold text-[#1E293B] transition-all hover:bg-[#FEF3C7]"
                   >
 
-                    Call Now
+                    Call Now (+91 9983123469)
 
                   </a>
 

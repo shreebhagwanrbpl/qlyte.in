@@ -59,7 +59,7 @@ export async function fetchFullCatalog() {
         collection(
           db,
           "websites",
-          "ozallecom",
+          "qlytein",
           "pages",
           "categoryproducts",
           "categories"
@@ -78,7 +78,7 @@ export async function fetchFullCatalog() {
             const subcategoriesCol = collection(
               db,
               "websites",
-              "ozallecom",
+              "qlytein",
               "pages",
               "categoryproducts",
               "categories",
@@ -99,7 +99,7 @@ export async function fetchFullCatalog() {
                   uid: `${categoryDoc.id}-${subDoc.id}-${index}`,
                   category: categoryName,
                   subCategory: subCategoryName,
-                  slug: item.slug || makeSlug(item.title),
+                  slug: item.slug || item.productSlug || makeSlug(item.title),
                 }));
 
               allProducts.push(...categoryProducts);
@@ -117,7 +117,7 @@ export async function fetchFullCatalog() {
                 uid: `${categoryDoc.id}-direct-${index}`,
                 category: categoryName,
                 subCategory: item.subCategory || categoryName,
-                slug: item.slug || makeSlug(item.title),
+                slug: item.slug || item.productSlug || makeSlug(item.title),
               }));
             allProducts.push(...directProducts);
           }
@@ -130,7 +130,7 @@ export async function fetchFullCatalog() {
           doc(
             db,
             "websites",
-            "ozallecom",
+            "qlytein",
             "pages",
             "products"
           )
@@ -144,7 +144,7 @@ export async function fetchFullCatalog() {
               uid: `other-${index}`,
               category: "Other Products",
               subCategory: item.subCategory || "Other Products",
-              slug: item.slug || makeSlug(item.title),
+              slug: item.slug || item.productSlug || makeSlug(item.title),
             }));
 
           allProducts.push(...oldProducts);
@@ -172,18 +172,18 @@ export async function fetchFullCatalog() {
  * Helpers for cached document retrieval across pages
  */
 export async function fetchHomeData() {
-  return fetchDocCached("websites/ozallecom/pages/home");
+  return fetchDocCached("websites/qlytein/pages/home");
 }
 
 export async function fetchContactData() {
-  return fetchDocCached("websites/ozallecom/pages/contact");
+  return fetchDocCached("websites/qlytein/pages/contact");
 }
 
 export async function fetchServicesData() {
-  return fetchDocCached("websites/ozallecom/pages/services");
+  return fetchDocCached("websites/qlytein/pages/services");
 }
 
 export async function fetchDistrictData(district) {
   if (!district) return null;
-  return fetchDocCached(`websites/ozallecom/districts/${district}`);
+  return fetchDocCached(`websites/qlytein/districts/${district}`);
 }

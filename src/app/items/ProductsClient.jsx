@@ -283,6 +283,38 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     return () => clearTimeout(timer);
   }, [openedCategory, pendingScroll]);
 
+  // Handle URL category search parameter / hash navigation from footer or direct links
+  useEffect(() => {
+    if (typeof window === "undefined" || !Object.keys(sortedGroupedProducts).length) return;
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const categoryParam = searchParams.get("category");
+    const hashParam = window.location.hash.replace("#", "");
+
+    if (categoryParam || hashParam) {
+      const match = Object.keys(sortedGroupedProducts).find((cat) => {
+        const catSlug = cat.replace(/\s+/g, "-").toLowerCase();
+        return (
+          (categoryParam && cat.toLowerCase() === categoryParam.toLowerCase()) ||
+          (hashParam && catSlug === hashParam.toLowerCase())
+        );
+      });
+
+      if (match) {
+        setOpenedCategory(match);
+        setActiveCategory(match);
+
+        setTimeout(() => {
+          const targetId = match.replace(/\s+/g, "-").toLowerCase();
+          const element = document.getElementById(targetId);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 300);
+      }
+    }
+  }, [sortedGroupedProducts]);
+
   // Scroll back to top visibility
   useEffect(() => {
     const handleScroll = () => {
