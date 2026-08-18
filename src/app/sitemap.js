@@ -1,11 +1,7 @@
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { fetchFullCatalog, getCategories, getBrands, fetchDistricts } from "@/lib/data-fetcher-server";
 
 export default async function sitemap() {
-    const baseUrl =
-        "https://qlyte.in";
-
+    const baseUrl = "https://qlyte.in";
     const urls = [];
 
     // Static Pages
@@ -43,98 +39,58 @@ export default async function sitemap() {
     );
 
     try {
-        // DISTRICTS
-        const districtSnap =
-            await getDocs(
-                collection(
-                    db,
-                    "websites",
-                    "qlytein",
-                    "districts"
-                )
-            );
-
-        const districts =
-            districtSnap.docs.map(
-                (doc) => doc.data()
-            );
-
+        // DISTRICT HUBS
+        const districts = await fetchDistricts();
         districts.forEach((district) => {
-            const slug =
-                district.slug;
-
-            if (!slug) return;
-
-            urls.push(
-                {
-                    url: `${baseUrl}/${slug}`,
-                    lastModified: new Date(),
-                    changeFrequency: "weekly",
-                    priority: 0.8,
-                },
-                {
-                    url: `${baseUrl}/${slug}/items`,
-                    lastModified: new Date(),
-                    changeFrequency: "weekly",
-                    priority: 0.8,
-                },
-                {
-                    url: `${baseUrl}/${slug}/about`,
-                    lastModified: new Date(),
-                    changeFrequency: "monthly",
-                    priority: 0.6,
-                },
-                {
-                    url: `${baseUrl}/${slug}/services`,
-                    lastModified: new Date(),
-                    changeFrequency: "monthly",
-                    priority: 0.6,
-                },
-                {
-                    url: `${baseUrl}/${slug}/contact`,
-                    lastModified: new Date(),
-                    changeFrequency: "monthly",
-                    priority: 0.6,
-                }
-            );
+            if (!district.slug) return;
+            urls.push({
+                url: `${baseUrl}/${district.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.8,
+            });
         });
 
-        // PRODUCTS
+        // CATEGORY HUBS
+        const categories = await getCategories();
+        categories.forEach((cat) => {
+            if (!cat.slug) return;
+            urls.push({
+                url: `${baseUrl}/category/${cat.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.8,
+            });
+        });
+
+        // BRAND HUBS
+        const brands = await getBrands();
+        brands.forEach((brand) => {
+            if (!brand.slug) return;
+            urls.push({
+                url: `${baseUrl}/brand/${brand.slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.75,
+            });
+        });
+
+        // PRIMARY AUTHORITATIVE PRODUCTS
         const products = await fetchFullCatalog();
+        products.forEach((product) => {
+            const slug = product.slug || product.productSlug;
+            if (!slug) return;
 
-        products.forEach(
-            (product) => {
-                if (!product.slug) return;
-
-                // Main Product URL
-                urls.push({
-                    url: `${baseUrl}/items/${product.slug}`,
-                    lastModified: new Date(),
-                    changeFrequency: "weekly",
-                    priority: 0.9,
-                });
-
-                // District Product URLs
-                districts.forEach(
-                    (district) => {
-                        if (!district.slug) return;
-
-                        urls.push({
-                            url: `${baseUrl}/${district.slug}/items/${product.slug}`,
-                            lastModified: new Date(),
-                            changeFrequency: "weekly",
-                            priority: 0.7,
-                        });
-                    }
-                );
-            }
-        );
+            urls.push({
+                url: `${baseUrl}/items/${slug}`,
+                lastModified: new Date(),
+                changeFrequency: "weekly",
+                priority: 0.9,
+            });
+        });
     } catch (error) {
-        console.error(
-            "Sitemap Error:",
-            error
-        );
+        console.error("Sitemap Generation Error:", error);
     }
 
     return urls;
-}
+}

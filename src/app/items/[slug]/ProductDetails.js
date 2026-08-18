@@ -33,11 +33,13 @@ const makeSlug = (text = "") =>
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-");
 
-export default function ProductDetails({ slug }) {
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
+export default function ProductDetails({ slug, initialProduct = null, district = null }) {
+    const [product, setProduct] = useState(initialProduct);
+    const [loading, setLoading] = useState(!initialProduct);
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [selectedImage, setSelectedImage] = useState("");
+    const [selectedImage, setSelectedImage] = useState(
+        initialProduct?.images?.length > 0 ? initialProduct.images[0] : (initialProduct?.image || "")
+    );
     const [selectedMedia, setSelectedMedia] = useState("image");
     const [showShare, setShowShare] = useState(false);
 
@@ -55,8 +57,9 @@ export default function ProductDetails({ slug }) {
         .split("/")
         .filter(Boolean);
 
-    const city =
-        pathParts.length > 1
+    const city = district
+        ? district
+        : pathParts.length > 1 && pathParts[0] !== "items"
             ? pathParts[0]
             : "India";
 
@@ -66,6 +69,17 @@ export default function ProductDetails({ slug }) {
 
     useEffect(() => {
         let isMounted = true;
+
+        if (initialProduct && initialProduct.slug === slug) {
+            setProduct(initialProduct);
+            setLoading(false);
+            if (initialProduct.images?.length > 0) {
+                setSelectedImage(initialProduct.images[0]);
+            } else if (initialProduct.image) {
+                setSelectedImage(initialProduct.image);
+            }
+            return;
+        }
 
         const loadProduct = async () => {
             try {
@@ -87,10 +101,6 @@ export default function ProductDetails({ slug }) {
                     );
                 });
 
-                console.log("URL SLUG:", slug);
-                console.log("TOTAL PRODUCTS:", allProducts.length);
-                console.log("FOUND PRODUCT:", found);
-
                 setProduct(found || null);
 
                 if (found) {
@@ -103,22 +113,17 @@ export default function ProductDetails({ slug }) {
                 }
             } catch (error) {
                 console.error("Error loading product:", error);
-                if (isMounted) setProduct(null);
             } finally {
                 if (isMounted) setLoading(false);
             }
         };
 
-        if (slug) {
-            loadProduct();
-        } else {
-            setLoading(false);
-        }
+        loadProduct();
 
         return () => {
             isMounted = false;
         };
-    }, [slug]);
+    }, [slug, initialProduct]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -12,7 +12,7 @@ const ProductCard = React.memo(function ProductCard({ product, district }) {
                 <div className="relative h-[180px] sm:h-[220px] rounded-2xl lg:rounded-3xl overflow-hidden bg-slate-100">
                     <img
                         src={product.images?.[0] || product.image || "/placeholder.svg"}
-                        alt={product.title}
+                        alt={`${product.title || "Biomedical Equipment"} - Supplier Rajbiosis`}
                         loading="lazy"
                         decoding="async"
                         className="w-full h-full object-contain p-5"

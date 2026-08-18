@@ -7,7 +7,7 @@ export async function generateMetadata({ params }) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
   const url = `https://qlyte.in/${district}`;
-  const title = `Biomedical & Laboratory Equipment Supplier in ${districtName} | Rajbiosis Private Limited`;
+  const title = `Biomedical & Laboratory Equipment Supplier in ${districtName} | Rajbiosis`;
   const description = `Rajbiosis Private Limited is the leading biomedical and laboratory diagnostic equipment supplier, dealer and distributor in ${districtName}. Offering CBC Machines, Hematology Analyzers, Biochemistry Analyzers & Hospital Equipment.`;
 
   return {
@@ -66,7 +66,11 @@ export default async function DistrictLayout({ children, params }) {
     "url": `https://qlyte.in/${district}`,
     "telephone": "+91-9983123469",
     "email": "rajbiosis@yahoo.in",
-    "description": `Biomedical and pathology laboratory diagnostic equipment supplier in ${districtName}.`,
+    "description": `Biomedical and pathology laboratory diagnostic equipment supplier, sales and AMC service provider in ${districtName}.`,
+    "areaServed": {
+      "@type": "AdministrativeArea",
+      "name": districtName
+    },
     "address": {
       "@type": "PostalAddress",
       "addressLocality": districtName,
@@ -80,13 +84,36 @@ export default async function DistrictLayout({ children, params }) {
     }
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://qlyte.in"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": `${districtName} Biomedical Hub`,
+        "item": `https://qlyte.in/${district}`
+      }
+    ]
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(districtSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {children}
     </>
   );
-}
+}

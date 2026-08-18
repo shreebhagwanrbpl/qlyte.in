@@ -307,8 +307,8 @@ export default function Footer() {
 
               {categories.length > 0 ? (
                 categories.slice(0, 7).map((cat) => {
-                  const catSlug = cat.replace(/\s+/g, "-").toLowerCase();
-                  const targetUrl = makeLink(`/items?category=${encodeURIComponent(cat)}#${catSlug}`);
+                  const catSlug = cat.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
+                  const targetUrl = makeLink(`/category/${catSlug}`);
 
                   return (
                     <Link
