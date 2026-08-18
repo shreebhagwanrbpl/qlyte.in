@@ -1,52 +1,48 @@
 import ProductDetails from "./ProductDetails";
+import { getProductBySlug } from "@/lib/data-fetcher-server";
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
+    const product = await getProductBySlug(slug);
 
-    const productName = slug
+    const fallbackName = slug
         ?.replace(/-/g, " ")
         ?.replace(/\b\w/g, (c) => c.toUpperCase());
 
-    const title = `${productName} Supplier in India | Price & Specifications | Rajbiosis Private Limited`;
+    const title = product?.title
+        ? `${product.title} Supplier in India | Price & Specifications | Rajbiosis`
+        : `${fallbackName} Supplier in India | Price & Specs | Rajbiosis Private Limited`;
 
-    const description = `Buy ${productName} at best price in India from Rajbiosis Private Limited. Trusted supplier, dealer and distributor of ${productName} for hospitals, laboratories, diagnostic centers, pathology labs and medical institutes across India.`;
+    const description = product?.description
+        ? `${product.description.slice(0, 155)}... Buy ${product.title} at best price in India from Rajbiosis Private Limited. Direct supplier & distributor.`
+        : `Buy ${fallbackName} at best price in India from Rajbiosis Private Limited. Trusted supplier, dealer and distributor of ${fallbackName} for hospitals and pathology labs across India.`;
 
     const url = `https://qlyte.in/items/${slug}`;
+    const mainImage = product?.images?.[0] || product?.image || "https://qlyte.in/logo.png";
+    const brandName = product?.brand || "Rajbiosis Private Limited";
+    const categoryName = product?.category || "Biomedical Equipment";
 
     return {
         title,
         description,
-
         keywords: [
-            productName,
-            `${productName} Supplier`,
-            `${productName} Dealer`,
-            `${productName} Distributor`,
-            `${productName} Manufacturer`,
-            `${productName} Exporter`,
-            `${productName} Price`,
-            `${productName} Price in India`,
-            `${productName} Supplier in India`,
-            `${productName} Dealer in India`,
-            `${productName} Distributor in India`,
-            `Buy ${productName}`,
-            `${productName} for Laboratory`,
-            `${productName} for Hospital`,
-            `${productName} for Diagnostic Center`,
-            "Biomedical Equipment",
-            "Medical Equipment",
-            "Laboratory Equipment",
-            "Diagnostic Equipment",
-            "Hospital Equipment",
-            "Healthcare Equipment",
+            product?.title || fallbackName,
+            `${product?.title || fallbackName} Supplier`,
+            `${product?.title || fallbackName} Dealer`,
+            `${product?.title || fallbackName} Distributor`,
+            `${product?.title || fallbackName} Price`,
+            `${product?.title || fallbackName} Price in India`,
+            `${product?.title || fallbackName} Specifications`,
+            brandName,
+            categoryName,
+            "Biomedical Equipment Supplier India",
+            "Pathology Laboratory Equipment",
+            "Medical Equipment Supplier Jaipur",
             "Rajbiosis Private Limited",
-            "Raj Biosis",
         ],
-
         alternates: {
             canonical: url,
         },
-
         openGraph: {
             title,
             description,
@@ -54,14 +50,21 @@ export async function generateMetadata({ params }) {
             siteName: "Rajbiosis Private Limited",
             type: "website",
             locale: "en_IN",
+            images: [
+                {
+                    url: mainImage,
+                    width: 800,
+                    height: 600,
+                    alt: product?.title || fallbackName,
+                },
+            ],
         },
-
         twitter: {
             card: "summary_large_image",
             title,
             description,
+            images: [mainImage],
         },
-
         robots: {
             index: true,
             follow: true,
@@ -73,26 +76,33 @@ export async function generateMetadata({ params }) {
                 "max-snippet": -1,
             },
         },
-
         metadataBase: new URL("https://qlyte.in"),
     };
 }
 
 export default async function Page({ params }) {
     const { slug } = await params;
+    const product = await getProductBySlug(slug);
 
-    const productName = slug
+    const fallbackName = slug
         ?.replace(/-/g, " ")
         ?.replace(/\b\w/g, (c) => c.toUpperCase());
+
+    const productName = product?.title || fallbackName;
+    const mainImage = product?.images?.[0] || product?.image || "https://qlyte.in/logo.png";
+    const brandName = product?.brand || "Rajbiosis Private Limited";
+    const categoryName = product?.category || "Biomedical Equipment";
 
     const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": productName,
-        "description": `Buy ${productName} at best price in India from Rajbiosis Private Limited. Trusted biomedical, diagnostic and laboratory equipment supplier for hospitals and pathology labs.`,
+        "image": product?.images?.length ? product.images : [mainImage],
+        "description": product?.description || `Buy ${productName} at best price in India from Rajbiosis Private Limited. Leading biomedical equipment supplier.`,
+        "category": categoryName,
         "brand": {
             "@type": "Brand",
-            "name": "Rajbiosis Private Limited"
+            "name": brandName
         },
         "offers": {
             "@type": "Offer",
@@ -127,8 +137,45 @@ export default async function Page({ params }) {
             {
                 "@type": "ListItem",
                 "position": 3,
+                "name": categoryName,
+                "item": `https://qlyte.in/items?category=${encodeURIComponent(categoryName)}`
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
                 "name": productName,
                 "item": `https://qlyte.in/items/${slug}`
+            }
+        ]
+    };
+
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `What is ${productName} used for?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${productName} is utilized in hospital laboratories, pathology labs, and diagnostic centers for precise clinical diagnostic analysis and testing.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Does Rajbiosis provide warranty and AMC for ${productName}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Yes, Rajbiosis Private Limited provides standard manufacturer warranty, complete installation assistance, staff training, and Annual Maintenance Contracts (AMC) across India.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `How can I request a quotation for ${productName}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `You can submit a quick enquiry through the product page or contact Rajbiosis Private Limited directly at +91-9983123469 or email rajbiosis@yahoo.in to receive an official commercial quote.`
+                }
             }
         ]
     };
@@ -143,7 +190,11 @@ export default async function Page({ params }) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
-            <ProductDetails slug={slug} />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <ProductDetails slug={slug} initialProduct={product} />
         </>
     );
-}
+}
