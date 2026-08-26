@@ -15,27 +15,27 @@ export default function ServicesPreview() {
   const services = [
     {
       icon: <Microscope size={30} />,
-      title: "Diagnostic Equipment",
+      title: "Diagnostic Machine Supply",
       description:
-        "Advanced diagnostic systems designed for accurate and efficient healthcare testing.",
+        "Advanced testing systems tailored for medical clinics, pathology labs, and diagnostic centers.",
     },
     {
       icon: <FlaskConical size={30} />,
-      title: "Laboratory Solutions",
+      title: "Complete Lab Setup",
       description:
-        "Reliable laboratory instruments and biomedical support for modern medical environments.",
+        "End-to-end guidance and equipment installation for setting up or upgrading your laboratory.",
     },
     {
       icon: <ShieldCheck size={30} />,
-      title: "Maintenance Support",
+      title: "Preventive Maintenance",
       description:
-        "Professional technical support and maintenance for biomedical systems.",
+        "Routine checkups and scheduled servicing to keep your diagnostic machinery running perfectly.",
     },
     {
       icon: <Stethoscope size={30} />,
-      title: "Healthcare Consultation",
+      title: "Technical Guidance",
       description:
-        "Expert guidance and consultation for healthcare and biomedical operations.",
+        "Practical advice and hands-on staff training to ensure smooth, trouble-free daily operation.",
     },
   ];
 
@@ -67,8 +67,8 @@ export default function ServicesPreview() {
 
         <SectionTitle
           badge="Our Services"
-          title="Premium Diagnostic & Biomedical Services"
-          description="Providing advanced healthcare technologies, laboratory systems and trusted biomedical solutions for modern diagnostics."
+          title="Essential Services We Offer"
+          description="Providing modern medical machinery, laboratory tools, and dedicated maintenance support for clinics."
           center
         />
 

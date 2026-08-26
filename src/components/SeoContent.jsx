@@ -46,35 +46,19 @@ export default function SeoContent({ city = "" }) {
                     <div className="space-y-7 text-lg leading-9 text-slate-600">
 
                         <p>
-                            Raj Biosis is a trusted supplier of biomedical
-                            and laboratory equipment in <strong>{location}</strong>.
-                            We provide CBC Machines, Hematology Analyzers,
-                            Biochemistry Analyzers, Urine Analyzers,
-                            ELISA Readers and diagnostic instruments for
-                            hospitals, pathology labs and healthcare facilities.
+                            At Rajbiosis, we supply medical diagnostic systems and clinical laboratory machinery to hospitals, pathology centers, and healthcare institutes in <strong>{location}</strong>. Our lineup includes blood analyzers, biochemistry instruments, urine testing systems, and essential diagnostic tools.
                         </p>
 
                         <p>
-                            Our mission is to provide reliable and high-quality
-                            laboratory equipment to healthcare professionals across
-                            India. We work with diagnostic centres, hospitals,
-                            research laboratories and medical institutions to
-                            deliver advanced biomedical solutions.
+                            We aim to make clinical testing reliable and hassle-free for medical staff across India. By offering durable machines and on-site engineering assistance, we help clinics generate accurate diagnostic reports without operational delays.
                         </p>
 
                         <p>
-                            We offer installation assistance, product guidance
-                            and technical support for a wide range of laboratory
-                            instruments. Whether you are setting up a new
-                            diagnostic laboratory or upgrading existing equipment,
-                            our team can help you select the right solution.
+                            Our technical team assists with equipment installation, routine testing, and ongoing service support. Whether you are opening a new pathology laboratory or upgrading older devices, we guide you to the right machinery for your test volume.
                         </p>
 
                         <p>
-                            Raj Biosis supplies equipment across
-                            multiple districts and cities, helping healthcare
-                            providers improve testing efficiency and
-                            diagnostic accuracy.
+                            With direct delivery and service coverage across cities and districts, Rajbiosis supports healthcare units in maintaining high standards of diagnostic accuracy.
                         </p>
 
                     </div>
@@ -101,20 +85,20 @@ export default function SeoContent({ city = "" }) {
 
                         {[
                             {
-                                q: "Do you supply biomedical equipment across India?",
-                                a: "Yes, we supply biomedical and laboratory equipment across multiple districts and cities."
+                                q: "Can you supply machinery to our location in India?",
+                                a: "Yes, we ship and deliver diagnostic machinery to clinics, hospitals, and labs across all states and districts."
                             },
                             {
-                                q: "Which laboratory instruments do you provide?",
-                                a: "We provide CBC Machines, Hematology Analyzers, Biochemistry Analyzers, ELISA Readers, Urine Analyzers and more."
+                                q: "What types of diagnostic machinery do you supply?",
+                                a: "We supply CBC blood counters, hematology analyzers, biochemistry testing units, urine strip readers, and pathology lab tools."
                             },
                             {
-                                q: "Do you provide installation support?",
-                                a: "Yes, installation assistance and technical support are available depending on the equipment and location."
+                                q: "Do you offer installation and initial machine setup?",
+                                a: "Yes, our engineers handle complete physical installation, testing, and operational guidance for your lab technicians."
                             },
                             {
-                                q: "Who can purchase biomedical equipment?",
-                                a: "Hospitals, pathology labs, diagnostic centres, research laboratories and healthcare facilities."
+                                q: "Who can order equipment from Rajbiosis?",
+                                a: "Hospitals, pathology labs, diagnostic clinics, medical research units, and healthcare centers can place orders directly."
                             }
                         ].map((item, index) => (
 

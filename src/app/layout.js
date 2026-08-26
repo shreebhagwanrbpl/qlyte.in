@@ -57,10 +57,10 @@ export const metadata = {
     card: "summary_large_image",
 
     title:
-      "Biomedical Equipment Supplier in India | Rajbiosis Private Limited",
+      "Comprehensive Biomedical Equipment Supplier Across India | Rajbiosis Private Limited",
 
     description:
-      "Supplier of biomedical, pathology, and laboratory equipment across India.",
+      "Your Trusted Partner for Biomedical & Laboratory Equipment Across India.",
 
     images: ["/logo.png"],
   },

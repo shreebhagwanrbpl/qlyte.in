@@ -7,21 +7,21 @@ export default function Testimonials() {
   const reviews = [
     {
       name: "Dr. Rajesh Kumar",
-      role: "Healthcare Specialist",
+      role: "Pathology Clinic Owner",
       review:
-        "Raj Biosis has consistently delivered reliable diagnostic equipment with outstanding support.",
+        "Rajbiosis installed our blood testing analyzer smoothly. Their technical team responded instantly whenever we needed guidance.",
     },
     {
       name: "Amit Sharma",
-      role: "Lab Director",
+      role: "Diagnostic Lab Director",
       review:
-        "Professional service, premium products, and excellent biomedical consultation experience.",
+        "High quality machinery and transparent communication. The maintenance support gives us total peace of mind.",
     },
     {
       name: "Neha Verma",
-      role: "Research Head",
+      role: "Clinical Specialist",
       review:
-        "Their healthcare solutions improved our laboratory efficiency significantly.",
+        "Their staff training made it very easy for our lab technicians to operate the new biochemistry system without mistakes.",
     },
   ];
 

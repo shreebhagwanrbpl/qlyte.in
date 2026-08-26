@@ -7,13 +7,13 @@ import { ShieldCheck, Award, HeartHandshake, Truck, Wrench, CheckCircle2 } from 
 
 export const metadata = {
   title: "About Us | Rajbiosis Private Limited",
-  description: "Learn about Rajbiosis Private Limited - India's leading supplier of biomedical equipment, pathology laboratory analyzers, hospital diagnostic systems, installation, AMC & calibration services.",
+  description: "Learn about Rajbiosis Private Limited - supplying trusted diagnostic machinery, laboratory testing units, setup guidance, and maintenance support across India.",
   keywords: [
     "About Rajbiosis Private Limited",
-    "Raj Biosis Company Profile",
-    "Biomedical Equipment Supplier Jaipur",
-    "Laboratory Equipment Dealer India",
-    "Diagnostic Equipment Distributor",
+    "Rajbiosis Medical Supplier",
+    "Diagnostic Equipment Jaipur",
+    "Laboratory Testing Machinery India",
+    "Biomedical Service Support",
   ],
   alternates: {
     canonical: "https://qlyte.in/about",
@@ -33,7 +33,7 @@ export default function AboutPage() {
       {/* Page Banner */}
       <PageBanner
         title="About Rajbiosis Private Limited"
-        subtitle="Empowering medical diagnostics and healthcare institutions with precision biomedical technologies across India."
+        subtitle="Helping diagnostic centers deliver accurate patient reports every single day."
       />
 
       {/* Main Story Section */}
@@ -64,8 +64,8 @@ export default function AboutPage() {
                   10+
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-[#1E293B]">Years of Excellence</h3>
-                  <p className="text-xs font-semibold text-slate-500">Biomedical Engineering & Supply</p>
+                  <h3 className="text-xl font-black text-[#1E293B]">Years Supporting Healthcare</h3>
+                  <p className="text-xs font-semibold text-slate-500">Diagnostic Supply & Maintenance</p>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function AboutPage() {
             {/* Floating Quality Badge */}
             <div className="absolute top-6 left-6 inline-flex items-center gap-2 rounded-full bg-[#0F172A]/80 text-white backdrop-blur-md px-4 py-2 text-xs font-bold shadow-lg border border-white/20">
               <ShieldCheck size={16} className="text-[#F4C542]" />
-              <span>Certified Healthcare Quality</span>
+              <span>Verified Laboratory Solutions</span>
             </div>
           </div>
 
@@ -81,25 +81,25 @@ export default function AboutPage() {
           <div>
             <SectionTitle
               badge="Who We Are"
-              title="Trusted Partner in Biomedical & Healthcare Diagnostics"
-              description="Rajbiosis Private Limited delivers state-of-the-art diagnostic machines, hematology systems, biochemistry analyzers, and pathology equipment to hospitals, diagnostic centers, and medical colleges across India."
+              title="Who We Are & What We Stand For"
+              description="Rajbiosis Private Limited provides clinical testing machinery, blood counters, biochemistry systems, and pathology supplies to clinics and hospitals across India."
             />
 
             <p className="mt-6 text-base sm:text-lg leading-8 text-slate-600">
-              Headquartered in Jaipur, Rajasthan, <strong>Rajbiosis Private Limited</strong> has established itself as a benchmark for quality, technical excellence, and customer trust. We specialize in providing comprehensive diagnostic equipment solutions tailored to clinical laboratories, pathology units, emergency ICUs, and research institutes.
+              Based in Jaipur, Rajasthan, <strong>Rajbiosis Private Limited</strong> focuses on making clinical diagnostic equipment easy to acquire and simple to operate. We supply reliable testing systems tailored for clinical pathology units, hospital ICUs, diagnostic labs, and medical centers.
             </p>
 
             <p className="mt-4 text-base sm:text-lg leading-8 text-slate-600">
-              Our dedicated team of certified biomedical engineers ensures complete end-to-end support — from initial consultation and equipment selection to seamless installation, staff training, calibration, and long-term Annual Maintenance Contracts (AMC).
+              Our field engineers assist clinics with complete end-to-end support. From choosing the suitable testing machine for your daily workload to proper installation, staff operational guidance, and routine maintenance, we ensure your lab runs smoothly.
             </p>
 
             {/* Key Bullet Checklist */}
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {[
-                "100% Genuine Leading Brands",
-                "Certified Engineers & AMC",
-                "Fast Pan-India Delivery",
-                "24/7 Technical Helpline",
+                "Authentic Machinery Only",
+                "Trained Field Engineers",
+                "Safe Transit Nationwide",
+                "Clear Warranty Terms",
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 rounded-2xl bg-white p-3.5 border border-[#F4C542]/20 shadow-sm">
                   <CheckCircle2 size={18} className="text-[#B88700] shrink-0" />
@@ -118,7 +118,7 @@ export default function AboutPage() {
           <SectionTitle
             badge="Our Philosophy"
             title="Vision & Mission"
-            description="Guiding the future of healthcare diagnostics with innovation and unyielding quality standards."
+            description="Guiding diagnostic excellence with practical technology and dependable technical service."
             center
           />
 
@@ -133,7 +133,7 @@ export default function AboutPage() {
                 Our Vision
               </h3>
               <p className="mt-4 leading-8 text-slate-600">
-                To be India’s most trusted and preferred biomedical equipment provider, empowering laboratories and hospitals with world-class diagnostic technology that ensures fast, accurate, and lifesaving patient outcomes.
+                To make high-quality medical testing technology accessible and easy to run for every laboratory and clinic across India.
               </p>
             </div>
 
@@ -146,7 +146,7 @@ export default function AboutPage() {
                 Our Mission
               </h3>
               <p className="mt-4 leading-8 text-slate-600">
-                To deliver authentic, high-precision medical machinery at competitive prices, backed by prompt installation, rigorous calibration, staff training, and round-the-clock technical service support across all regions.
+                To supply genuine diagnostic machines, offer clear hands-on staff training, and provide fast technical repairs whenever clinics need help.
               </p>
             </div>
 
@@ -162,10 +162,10 @@ export default function AboutPage() {
               Why Choose Rajbiosis
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black text-white">
-              Built on Reliability, Precision & Integrity
+              Reliable Machinery & Honest Guidance
             </h2>
             <p className="mt-4 text-slate-300">
-              Every equipment we supply undergoes multi-stage quality testing to guarantee uncompromised accuracy in medical diagnostics.
+              Every instrument we deliver is tested for performance to help your laboratory output accurate diagnostic results.
             </p>
           </div>
 
@@ -173,23 +173,23 @@ export default function AboutPage() {
             {[
               {
                 icon: <ShieldCheck size={28} />,
-                title: "Authentic Products",
-                desc: "Direct supply of 100% genuine blood analyzers, reagents, and pathology instruments from top manufacturers.",
+                title: "Verified Brands",
+                desc: "Direct supply of tested analyzers, testing reagents, and pathology instruments.",
               },
               {
                 icon: <Wrench size={28} />,
-                title: "Certified Engineers",
-                desc: "Expert biomedical engineers providing immediate installation, preventive maintenance, and AMC service.",
+                title: "On-Site Engineers",
+                desc: "Skilled technicians handling physical installation, routine maintenance, and fast servicing.",
               },
               {
                 icon: <Truck size={28} />,
-                title: "Express Logistics",
-                desc: "Safe, transit-insured delivery across all states and districts in India with zero damage guarantee.",
+                title: "Safe Shipping",
+                desc: "Careful packaging and transit coverage to ensure your equipment arrives damage-free.",
               },
               {
                 icon: <Award size={28} />,
-                title: "Warranty & Support",
-                desc: "Comprehensive equipment warranty, calibration certificates, and 24/7 dedicated helpline assistance.",
+                title: "Warranty & Help",
+                desc: "Equipment warranty options, clear calibration reports, and quick telephone technical support.",
               },
             ].map((card, idx) => (
               <div
