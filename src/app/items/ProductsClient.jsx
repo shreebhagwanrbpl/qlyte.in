@@ -13,7 +13,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
-import PageBanner from "@/components/PageBanner";
+
 import SectionTitle from "@/components/SectionTitle";
 // import CTASection from "@/components/CTASection";
 import ProductCard from "@/components/ProductCard";
@@ -349,11 +349,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
 
   return (
     <Profiler id="ProductsLayout" onRender={onRenderCallback}>
-      {/* Banner */}
-      <PageBanner
-        title={city ? `Our Products in ${city}` : "Our Products"}
-        subtitle="Explore advanced biomedical and diagnostic equipment designed for modern healthcare excellence."
-      />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

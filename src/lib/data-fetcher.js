@@ -4,6 +4,8 @@ import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 // Simple in-memory cache for Firestore documents and catalog
 const docCache = {};
 let catalogPromise = null;
+let catalogCachedAt = 0;
+const CATALOG_CACHE_TTL = 15 * 1000; // Short TTL so admin publish/delete becomes visible quickly.
 
 const makeSlug = (text = "") =>
   text
@@ -46,8 +48,15 @@ export async function fetchDocCached(path) {
  * Fetch and process the entire products catalog (categories, subcategories, legacy list).
  * Caches the result globally to eliminate repeat network reads during client-side navigation.
  */
-export async function fetchFullCatalog() {
-  if (catalogPromise) {
+export async function fetchFullCatalog({ forceRefresh = false } = {}) {
+  const now = Date.now();
+
+  if (forceRefresh) {
+    catalogPromise = null;
+    catalogCachedAt = 0;
+  }
+
+  if (catalogPromise && (now - catalogCachedAt) < CATALOG_CACHE_TTL) {
     return catalogPromise;
   }
 
@@ -93,7 +102,7 @@ export async function fetchFullCatalog() {
               const subCategoryName = subData.subCategory || subDoc.id;
 
               const categoryProducts = (subData.products || [])
-                .filter((p) => p.isPublished !== false)
+                .filter((p) => p.isPublished !== false && p.isDeleted !== true && p.deleted !== true && String(p.status || "").toLowerCase() !== "deleted")
                 .map((item, index) => ({
                   ...item,
                   uid: `${categoryDoc.id}-${subDoc.id}-${index}`,
@@ -111,7 +120,7 @@ export async function fetchFullCatalog() {
           // Fallback direct category products
           if (data.products?.length) {
             const directProducts = data.products
-              .filter((p) => p.isPublished !== false)
+              .filter((p) => p.isPublished !== false && p.isDeleted !== true && p.deleted !== true && String(p.status || "").toLowerCase() !== "deleted")
               .map((item, index) => ({
                 ...item,
                 uid: `${categoryDoc.id}-direct-${index}`,
@@ -138,7 +147,7 @@ export async function fetchFullCatalog() {
 
         if (oldSnap.exists()) {
           const oldProducts = (oldSnap.data().products || [])
-            .filter((p) => p.isPublished !== false)
+            .filter((p) => p.isPublished !== false && p.isDeleted !== true && p.deleted !== true && String(p.status || "").toLowerCase() !== "deleted")
             .map((item, index) => ({
               ...item,
               uid: `other-${index}`,
@@ -165,6 +174,7 @@ export async function fetchFullCatalog() {
     }
   })();
 
+  catalogCachedAt = now;
   return catalogPromise;
 }
 

@@ -75,7 +75,7 @@ export default async function sitemap() {
             });
         });
 
-        // PRIMARY AUTHORITATIVE PRODUCTS
+        // PRIMARY PRODUCTS (without district)
         const products = await fetchFullCatalog();
         products.forEach((product) => {
             const slug = product.slug || product.productSlug;
@@ -88,9 +88,25 @@ export default async function sitemap() {
                 priority: 0.9,
             });
         });
+
+        // DISTRICT PRODUCT PAGES (with district)
+        // These are separate indexable pages with self-canonical URLs.
+        districts.forEach((district) => {
+            if (!district.slug) return;
+            products.forEach((product) => {
+                const slug = product.slug || product.productSlug;
+                if (!slug) return;
+                urls.push({
+                    url: `${baseUrl}/${district.slug}/items/${slug}`,
+                    lastModified: new Date(),
+                    changeFrequency: "weekly",
+                    priority: 0.85,
+                });
+            });
+        });
     } catch (error) {
         console.error("Sitemap Generation Error:", error);
     }
 
     return urls;
-}
+}

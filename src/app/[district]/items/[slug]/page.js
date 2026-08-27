@@ -15,17 +15,27 @@ export async function generateMetadata({ params }) {
 
     const productName = product?.title || fallbackName;
 
-    const title = `${productName} Supplier in ${districtName} | Price & Specs | Rajbiosis`;
-    const description = `Buy ${productName} in ${districtName}. Rajbiosis Private Limited is the leading biomedical and laboratory equipment supplier, dealer and service center in ${districtName}, Rajasthan & India.`;
-    
-    // Canonical points to main master product page to consolidate rank authority
-    const canonicalUrl = `https://qlyte.in/items/${slug}`;
-    const pageUrl = `https://qlyte.in/${district}/items/${slug}`;
+    const title = product?.seoTitle
+        ? `${product.seoTitle.replace(/\s*\|\s*Rajbiosis.*$/i, "")} in ${districtName} | Rajbiosis`
+        : `${productName} Supplier in ${districtName} | Price & Specs | Rajbiosis`;
+
+    const description = `Buy ${productName} in ${districtName}. ${product?.seoDescription ||
+        `Rajbiosis Private Limited supplies biomedical and laboratory equipment for hospitals, pathology labs and diagnostic centers.`
+        }`;
+
+    // District pages are intentionally indexable and self-canonical
+    // so they can target district search intent.
+    const canonicalUrl = `https://qlyte.in/${district}/items/${slug}`;
+    const pageUrl = canonicalUrl;
 
     return {
         title,
         description,
+
         keywords: [
+            ...(Array.isArray(product?.seoKeywords)
+                ? product.seoKeywords
+                : []),
             `${productName} ${districtName}`,
             `Buy ${productName} ${districtName}`,
             `${productName} Supplier ${districtName}`,
@@ -33,9 +43,11 @@ export async function generateMetadata({ params }) {
             `Biomedical Equipment ${districtName}`,
             "Rajbiosis Private Limited",
         ],
+
         alternates: {
             canonical: canonicalUrl,
         },
+
         openGraph: {
             title,
             description,
@@ -44,7 +56,10 @@ export async function generateMetadata({ params }) {
             type: "website",
             images: [
                 {
-                    url: product?.images?.[0] || product?.image || "https://qlyte.in/logo.png",
+                    url:
+                        product?.images?.[0] ||
+                        product?.image ||
+                        "https://qlyte.in/logo.png",
                     alt: `${productName} in ${districtName}`,
                 },
             ],
@@ -54,6 +69,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
     const { slug, district } = await params;
+
     const product = await getProductBySlug(slug);
 
     const districtName = district
@@ -66,33 +82,46 @@ export default async function Page({ params }) {
 
     const productName = product?.title || fallbackName;
 
+    // IMPORTANT:
+    // pageUrl must be defined inside Page() because the
+    // pageUrl inside generateMetadata() is a different scope.
+    const pageUrl = `https://qlyte.in/${district}/items/${slug}`;
+
     const productSchema = {
         "@context": "https://schema.org/",
         "@type": "Product",
+
         "name": `${productName} - ${districtName}`,
+
         "description": `Buy ${productName} in ${districtName} from Rajbiosis Private Limited. Leading biomedical equipment supplier with installation, warranty & AMC in ${districtName}.`,
+
         "brand": {
             "@type": "Brand",
-            "name": product?.brand || "Rajbiosis Private Limited"
+            "name": product?.brand || "Rajbiosis Private Limited",
         },
+
         "offers": {
             "@type": "Offer",
-            "url": `https://qlyte.in/items/${slug}`,
+            "url": pageUrl,
             "priceCurrency": "INR",
             "availability": "https://schema.org/InStock",
+
             "seller": {
                 "@type": "Organization",
-                "name": "Rajbiosis Private Limited"
-            }
-        }
+                "name": "Rajbiosis Private Limited",
+            },
+        },
     };
 
     return (
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(productSchema),
+                }}
             />
+
             <ProductDetails
                 slug={slug}
                 district={district}
@@ -100,4 +129,4 @@ export default async function Page({ params }) {
             />
         </>
     );
-}
+}

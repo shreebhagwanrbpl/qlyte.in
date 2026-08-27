@@ -9,13 +9,13 @@ export async function generateMetadata({ params }) {
         ?.replace(/-/g, " ")
         ?.replace(/\b\w/g, (c) => c.toUpperCase());
 
-    const title = product?.title
+    const title = product?.seoTitle || (product?.title
         ? `${product.title} Supplier in India | Price & Specifications | Rajbiosis`
-        : `${fallbackName} Supplier in India | Price & Specs | Rajbiosis Private Limited`;
+        : `${fallbackName} Supplier in India | Price & Specs | Rajbiosis Private Limited`);
 
-    const description = product?.description
+    const description = product?.seoDescription || (product?.description
         ? `${product.description.slice(0, 155)}... Buy ${product.title} at best price in India from Rajbiosis Private Limited. Direct supplier & distributor.`
-        : `Buy ${fallbackName} at best price in India from Rajbiosis Private Limited. Trusted supplier, dealer and distributor of ${fallbackName} for hospitals and pathology labs across India.`;
+        : `Buy ${fallbackName} at best price in India from Rajbiosis Private Limited. Trusted supplier, dealer and distributor of ${fallbackName} for hospitals and pathology labs across India.`);
 
     const url = `https://qlyte.in/items/${slug}`;
     const mainImage = product?.images?.[0] || product?.image || "https://qlyte.in/logo.png";
@@ -26,6 +26,7 @@ export async function generateMetadata({ params }) {
         title,
         description,
         keywords: [
+            ...(Array.isArray(product?.seoKeywords) ? product.seoKeywords : []),
             product?.title || fallbackName,
             `${product?.title || fallbackName} Supplier`,
             `${product?.title || fallbackName} Dealer`,
@@ -197,4 +198,4 @@ export default async function Page({ params }) {
             <ProductDetails slug={slug} initialProduct={product} />
         </>
     );
-}
+}

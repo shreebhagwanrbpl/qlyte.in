@@ -84,18 +84,34 @@ export default function ProductDetails({ slug, initialProduct = null, district =
         const loadProduct = async () => {
             try {
                 setLoading(true);
-                const allProducts = await fetchFullCatalog();
+                const allProducts = await fetchFullCatalog({ forceRefresh: true });
 
                 if (!isMounted) return;
 
                 const targetSlug = decodeURIComponent(slug || "").toLowerCase().trim();
 
                 const found = allProducts.find((p) => {
-                    const pSlug = (p.slug || p.productSlug || makeSlug(p.title || "")).toLowerCase().trim();
-                    const pTitleSlug = makeSlug(p.title || "").toLowerCase().trim();
+                    if (
+                        p?.isPublished === false ||
+                        p?.isDeleted === true ||
+                        p?.deleted === true ||
+                        String(p?.status || "").toLowerCase() === "deleted"
+                    ) {
+                        return false;
+                    }
+
+                    const candidateSlugs = [
+                        p.slug,
+                        p.productSlug,
+                        p.seoSlug,
+                        p.masterSlug,
+                        makeSlug(p.title || ""),
+                    ]
+                        .filter(Boolean)
+                        .map((value) => decodeURIComponent(String(value)).toLowerCase().trim());
+
                     return (
-                        pSlug === targetSlug ||
-                        pTitleSlug === targetSlug ||
+                        candidateSlugs.includes(targetSlug) ||
                         String(p.id || "").toLowerCase() === targetSlug ||
                         String(p.uid || "").toLowerCase() === targetSlug
                     );

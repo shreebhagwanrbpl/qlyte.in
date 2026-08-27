@@ -8,7 +8,7 @@ let cachedCatalog = null;
 let cachedCatalogTimestamp = 0;
 let cachedDistricts = null;
 let cachedDistrictsTimestamp = 0;
-const CACHE_TTL = 3600 * 1000; // 1 hour in milliseconds
+const CACHE_TTL = 15 * 1000; // Short TTL so admin publish/delete becomes visible quickly.
 
 export const makeSlug = (text = "") =>
   text
@@ -39,11 +39,27 @@ export const getProductBySlug = cache(async (slug) => {
   const targetSlug = decodeURIComponent(slug).toLowerCase().trim();
 
   return catalog.find((p) => {
-    const pSlug = (p.slug || p.productSlug || makeSlug(p.title || "")).toLowerCase().trim();
-    const pTitleSlug = makeSlug(p.title || "").toLowerCase().trim();
+    if (
+      p?.isPublished === false ||
+      p?.isDeleted === true ||
+      p?.deleted === true ||
+      String(p?.status || "").toLowerCase() === "deleted"
+    ) {
+      return false;
+    }
+
+    const candidateSlugs = [
+      p.slug,
+      p.productSlug,
+      p.seoSlug,
+      p.masterSlug,
+      makeSlug(p.title || ""),
+    ]
+      .filter(Boolean)
+      .map((value) => decodeURIComponent(String(value)).toLowerCase().trim());
+
     return (
-      pSlug === targetSlug ||
-      pTitleSlug === targetSlug ||
+      candidateSlugs.includes(targetSlug) ||
       String(p.id || "").toLowerCase() === targetSlug ||
       String(p.uid || "").toLowerCase() === targetSlug
     );
