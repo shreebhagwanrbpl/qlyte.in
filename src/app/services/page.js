@@ -36,28 +36,28 @@ export default function ServicesPage() {
 
   const defaultServices = [
     {
-      title: "Biomedical Equipment Sales",
-      desc: "Authorized supply of CBC machines, hematology analyzers, biochemistry analyzers, blood gas systems, and pathology lab instruments.",
+      title: "Medical Machine Supply",
+      desc: "Authorized supply of CBC counters, hematology systems, biochemistry analyzers, blood gas units, and pathology laboratory instruments.",
     },
     {
-      title: "On-Site Installation & Setup",
-      desc: "Professional installation and initial configuration by certified biomedical engineers to ensure zero downtime and optimal accuracy.",
+      title: "On-Site Setup & Testing",
+      desc: "Professional physical installation and accuracy configuration by experienced biomedical technicians before your first patient test.",
     },
     {
-      title: "Annual Maintenance Contracts (AMC)",
-      desc: "Comprehensive AMC and preventive maintenance plans protecting your medical equipment with routine servicing and priority response.",
+      title: "Annual Maintenance Plans (AMC)",
+      desc: "Scheduled preventive servicing contracts to protect your machinery from sudden breakdowns and ensure long operational life.",
     },
     {
-      title: "Equipment Calibration & Testing",
-      desc: "Precision calibration and performance testing meeting NABL & healthcare standards to guarantee accurate diagnostic results.",
+      title: "Calibration & Accuracy Audits",
+      desc: "Routine calibration checks meeting essential healthcare guidelines to guarantee reliable patient diagnostic results.",
     },
     {
-      title: "Laboratory Staff Training",
-      desc: "Hands-on operational and maintenance training for lab technicians, pathology staff, and doctors on new machinery.",
+      title: "Operator & Staff Training",
+      desc: "Practical hands-on training sessions for lab technicians and doctors to operate equipment safely and efficiently.",
     },
     {
-      title: "Emergency Repairs & Parts",
-      desc: "Rapid emergency troubleshooting, component repair, and replacement with 100% genuine OEM spare parts across India.",
+      title: "Emergency Repairs & Spares",
+      desc: "Fast troubleshooting assistance and genuine replacement spare parts across India to minimize laboratory downtime.",
     },
   ];
 
@@ -90,8 +90,8 @@ export default function ServicesPage() {
     <>
       {/* Page Banner */}
       <PageBanner
-        title="Our Biomedical Services"
-        subtitle="End-to-end sales, installation, AMC, calibration, and technical support for healthcare and pathology laboratories."
+        title="Our Services & Technical Support"
+        subtitle="Everything your clinic needs — from machine supply and setup to routine servicing."
       />
 
       {/* Services Showcase Hero */}
@@ -102,21 +102,21 @@ export default function ServicesPage() {
           <div className="lg:col-span-6">
             <span className="inline-flex items-center gap-2 rounded-full bg-[#FEF3C7] border border-[#F4C542]/30 px-4 py-1.5 text-xs font-bold text-[#B88700]">
               <ShieldCheck size={16} />
-              Comprehensive Technical Care
+              Complete Lifecycle Support
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black text-[#1E293B] leading-tight">
-              Complete Engineering & After-Sales Support
+              Complete Care Throughout Your Equipment's Lifecycle
             </h2>
             <p className="mt-5 text-base sm:text-lg leading-8 text-slate-600">
-              At <strong>Rajbiosis Private Limited</strong>, our relationship with laboratories and hospitals goes far beyond equipment sales. We provide complete lifecycle management for diagnostic machinery with certified biomedical engineers available on-call.
+              At <strong>Rajbiosis Private Limited</strong>, our relationship with clinics and hospitals goes far beyond machinery delivery. We assist you with complete operational guidance and technician support whenever you need help.
             </p>
 
             <div className="mt-8 space-y-4">
               {[
-                "Turnkey Pathology Lab Setup & Equipment Selection",
-                "Certified Engineers with Pan-India Service Coverage",
-                "Genuine Reagents, Consumables & OEM Spare Parts",
-                "Guaranteed 24-Hour Emergency Response Helpline",
+                "Turnkey Pathology Setup & Machine Recommendation",
+                "Direct Service Coverage Across Cities & Districts",
+                "Authentic Reagents, Testing Strips & OEM Spare Parts",
+                "Fast Engineering Helpline & On-Call Guidance",
               ].map((point, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <CheckCircle size={20} className="text-[#B88700] shrink-0" />
@@ -205,8 +205,8 @@ export default function ServicesPage() {
         <div className="container-custom relative z-10">
           <SectionTitle
             badge="How We Work"
-            title="Simple & Professional Process"
-            description="We follow a streamlined workflow to ensure immediate equipment dispatch, error-free calibration, and uninterrupted support."
+            title="Simple 3-Step Process"
+            description="We follow a clear workflow from initial consultation to equipment setup and continuous technical support."
             center
           />
 
@@ -214,18 +214,18 @@ export default function ServicesPage() {
             {[
               {
                 step: "01",
-                title: "Requirements & Selection",
-                desc: "Understanding your laboratory workload and diagnostic parameters to recommend the perfect model.",
+                title: "Understanding Your Needs",
+                desc: "We analyze your lab's sample volume and testing goals to suggest the most efficient equipment model.",
               },
               {
                 step: "02",
-                title: "Delivery & Installation",
-                desc: "Express safe dispatch, on-site installation, initial calibration, and complete staff operational training.",
+                title: "Safe Setup & Training",
+                desc: "We deliver the machine safely, perform full physical setup, test accuracy, and train your laboratory team.",
               },
               {
                 step: "03",
-                title: "Lifetime Service & AMC",
-                desc: "Routine preventive maintenance, calibration certification, and 24/7 priority emergency support.",
+                title: "Continuous Technical Support",
+                desc: "We remain available 24/7 for preventive checkups, routine maintenance contracts, and prompt repairs.",
               },
             ].map((item, index) => (
               <div

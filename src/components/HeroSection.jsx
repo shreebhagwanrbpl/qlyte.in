@@ -31,22 +31,22 @@ export default function HeroSection({ city }) {
       id: 1,
       image: "/hero-1.png",
       tag: "Biochemistry & Hematology",
-      title: "Advanced Diagnostic Analyzers",
-      subtitle: "High-throughput, fully automated blood and pathology testing systems for modern laboratories.",
+      title: "Fast & Accurate Blood Testing Systems",
+      subtitle: "Fully automated analyzers engineered for smooth daily laboratory testing.",
     },
     {
       id: 2,
       image: "/hero-2.png",
-      tag: "Blood Gas & Critical Care",
-      title: "Precision Medical Equipment",
-      subtitle: "State-of-the-art diagnostic instruments designed for hospitals and healthcare centers.",
+      tag: "Critical Care Solutions",
+      title: "Reliable Diagnostic Machinery",
+      subtitle: "Built for clinical accuracy in hospitals, ICUs, and health centers.",
     },
     {
       id: 3,
       image: "/hero-3.png",
-      tag: "Pathology & Lab Solutions",
-      title: "Complete Healthcare Excellence",
-      subtitle: "Reliable equipment with complete installation, warranty, AMC, and technical support.",
+      tag: "Lab Care & Support",
+      title: "Complete Engineering Assistance",
+      subtitle: "Direct supply with installation, warranty, maintenance, and expert support.",
     },
   ];
 
@@ -95,8 +95,8 @@ export default function HeroSection({ city }) {
     return districtSlug ? `/${districtSlug}${path}` : path;
   };
 
-  const displayTitle = heroData.title || "Rajbiosis Private Limited - Leading Biomedical Equipment Supplier";
-  const displayDesc = heroData.description || "Delivering trusted biomedical, diagnostic, and laboratory equipment with precision, innovation, and nationwide support across India.";
+  const displayTitle = heroData.title || "Modern Medical & Lab Technology Made Simple for Every Clinic";
+  const displayDesc = heroData.description || "We provide high-precision diagnostic instruments, fast laboratory setups, and dependable technical care across India.";
 
   return (
     <section className="relative overflow-hidden bg-[#FFFDF5] pt-12 pb-20 md:pt-16 md:pb-28">
@@ -272,10 +272,10 @@ export default function HeroSection({ city }) {
         {/* Stats Row */}
         <div className="mt-16 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
           {[
-            ["10+", "Years Experience"],
-            ["500+", "Products Delivered"],
+            ["10+", "Years Supporting Healthcare"],
+            ["500+", "Machines Installed"],
+            ["200+", "Active Medical Centers"],
             ["100%", "Quality Assurance"],
-            ["24/7", "Technical Support"],
           ].map(([value, label]) => (
             <div
               key={label}

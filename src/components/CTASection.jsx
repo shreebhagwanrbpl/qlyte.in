@@ -97,13 +97,13 @@ export default function CTASection({ city }) {
 
               <h2 className="mt-6 text-4xl lg:text-6xl font-black leading-tight">
 
-                Need Premium
+                Looking to Upgrade
                 <br />
 
-                Biomedical
+                Your Medical
                 <span className="block text-[#F4C542]">
 
-                  Solutions?
+                  Laboratory?
 
                 </span>
 
@@ -111,11 +111,9 @@ export default function CTASection({ city }) {
 
               <p className="mt-7 max-w-xl text-lg leading-9 text-slate-300">
 
-                Discover innovative diagnostic systems,
-                biomedical equipment, installation,
-                AMC, calibration and nationwide
-                healthcare support from experienced
-                professionals.
+                Connect with our team to find the right diagnostic equipment,
+                installation assistance, and routine maintenance plans tailored
+                for your clinic's needs.
 
               </p>
 
@@ -147,7 +145,7 @@ export default function CTASection({ city }) {
 
                   <p className="text-slate-400">
 
-                    Technical Support
+                    Engineering Helpline
 
                   </p>
 
@@ -171,16 +169,14 @@ export default function CTASection({ city }) {
 
                 <h3 className="mt-6 text-3xl font-bold text-[#1E293B]">
 
-                  Let's Talk
+                  Let's Talk Today
 
                 </h3>
 
                 <p className="mt-4 leading-8 text-slate-600">
 
-                  Connect with our biomedical experts
-                  for consultation, equipment supply,
-                  installation, AMC and complete
-                  healthcare solutions.
+                  Reach out for equipment inquiries, price estimates, or
+                  hands-on technical guidance for your laboratory.
 
                 </p>
 
