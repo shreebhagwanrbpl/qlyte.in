@@ -83,7 +83,24 @@ const urlToBase64 = async (url) => {
   });
 };
 
+async function getDynamicContact() {
+  try {
+    const response = await fetch("/api/site-data?page=contact", { cache: "no-store" });
+    const data = response.ok ? await response.json() : {};
+    const info = Array.isArray(data?.contactInfo) ? data.contactInfo : [];
+    const phones = info
+      .filter((x) => /phone|mobile|whatsapp/i.test(String(x?.label || "")))
+      .flatMap((x) => String(x?.value || "").split(/[,\\n/;|]+/))
+      .map((x) => x.trim())
+      .filter(Boolean);
+    return phones.join(" / ");
+  } catch {
+    return "";
+  }
+}
+
 export async function downloadProductBrochure(product) {
+  const dynamicPhone = await getDynamicContact();
   if (!product) return;
 
   const doc = new jsPDF({
@@ -122,7 +139,7 @@ export async function downloadProductBrochure(product) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.text("Phone: +91 9983123469", pageWidth - 14, 10, { align: "right" });
+  doc.text(dynamicPhone ? `Phone: ${dynamicPhone}` : "", pageWidth - 14, 10, { align: "right" });
   doc.text("Web: www.qlyte.in", pageWidth - 14, 16, { align: "right" });
 
   // --- PRODUCT TITLE ---
@@ -386,7 +403,7 @@ export async function downloadProductBrochure(product) {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
   doc.setTextColor(203, 213, 225);
-  doc.text("Sales, service, installation, AMC & calibration across India | Contact: +91 9983123469", 14, footerY + 14);
+  doc.text(dynamicPhone ? `Sales, service, installation, AMC & calibration across India | Contact: ${dynamicPhone}` : "Sales, service, installation, AMC & calibration across India", 14, footerY + 14);
   doc.text("Official Product Brochure | Confidential & Proprietary", pageWidth - 14, footerY + 14, { align: "right" });
 
   // Save / Download PDF

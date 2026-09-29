@@ -113,7 +113,7 @@ export default function CTASection({ city }) {
 
                 Connect with our team to find the right diagnostic equipment,
                 installation assistance, and routine maintenance plans tailored
-                for your clinic's needs.
+                for your clinic&apos;s needs.
 
               </p>
 
@@ -169,7 +169,7 @@ export default function CTASection({ city }) {
 
                 <h3 className="mt-6 text-3xl font-bold text-[#1E293B]">
 
-                  Let's Talk Today
+                  Let&apos;s Talk Today
 
                 </h3>
 

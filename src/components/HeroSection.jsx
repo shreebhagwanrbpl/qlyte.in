@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-
+import { motion, AnimatePresence } from "framer-motion";
+import { fetchSiteDoc } from "@/lib/site-data-client";
 import {
   ShieldCheck,
   ChevronLeft,
@@ -53,9 +51,7 @@ export default function HeroSection({ city }) {
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "qlytein", "pages", "home")
-        );
+        const snap = await fetchSiteDoc("home");
 
         if (snap.exists()) {
           setHeroData(snap.data());
@@ -170,18 +166,21 @@ export default function HeroSection({ city }) {
 
             {/* CTA Buttons */}
             <div className="mt-10 flex flex-wrap justify-center lg:justify-start gap-4">
-              <Link href={makeLink("/services")}>
-                <button className="group flex h-14 items-center gap-3 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] px-8 font-bold text-white shadow-[0_15px_40px_rgba(212,175,55,.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_50px_rgba(212,175,55,.45)]">
-                  <span>{heroData.button1Text || "Explore Services"}</span>
-                  <ArrowRight size={18} className="transition group-hover:translate-x-1" />
-                </button>
-              </Link>
-
-              <Link href={makeLink("/contact")}>
-                <button className="h-14 rounded-2xl border border-[#D4A017]/30 bg-white px-8 font-bold text-slate-800 shadow-sm transition-all duration-300 hover:bg-[#FEF3C7] hover:border-[#D4A017]">
-                  {heroData.button2Text || "Contact Us"}
-                </button>
-              </Link>
+              {heroData.button1Text ? (
+                <Link href={makeLink("/items")}>
+                  <button className="group flex h-14 items-center gap-3 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] px-8 font-bold text-white shadow-[0_15px_40px_rgba(212,175,55,.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_50px_rgba(212,175,55,.45)]">
+                    <span>{heroData.button1Text}</span>
+                    <ArrowRight size={18} className="transition group-hover:translate-x-1" />
+                  </button>
+                </Link>
+              ) : null}
+              {heroData.button2Text ? (
+                <Link href={makeLink("/contact")}>
+                  <button className="h-14 rounded-2xl border border-[#D4A017]/30 bg-white px-8 font-bold text-slate-800 shadow-sm transition-all duration-300 hover:bg-[#FEF3C7] hover:border-[#D4A017]">
+                    {heroData.button2Text}
+                  </button>
+                </Link>
+              ) : null}
             </div>
           </motion.div>
 

@@ -1,50 +1,67 @@
 "use client";
+
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import {
-  doc,
-  getDoc,
-  addDoc,
-  collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { extractPhones, extractEmails, getContactAddress, getWorkingHours } from "@/lib/contact-utils";
+import { fetchSiteDoc, submitQuery } from "@/lib/site-data-client";
+
 import toast from "react-hot-toast";
 import {
   Mail,
   Phone,
   MapPin,
   Clock3,
-
+  ArrowRight,
 } from "lucide-react";
-import { ArrowRight } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import CTASection from "@/components/CTASection";
 
-export default function ContactPage() {
+export default function ContactPage({ city = "" }) {
   const [loading, setLoading] = useState(true);
-  const [districtData, setDistrictData] =
-    useState(null);
-  const [contactInfo, setContactInfo] =
-    useState([]);
+  const [districtData, setDistrictData] = useState(null);
+  const [contactInfo, setContactInfo] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
 
-  const [submitting, setSubmitting] =
-    useState(false);
   const pathname = usePathname();
 
   const pathParts = pathname
     .split("/")
     .filter(Boolean);
 
+  const staticRoutes = [
+    "about",
+    "services",
+    "products",
+    "contact",
+    "items",
+    "enquiry",
+    "biomedical-equipment",
+    "brand",
+    "category",
+    "diagnostic-equipment",
+    "laboratory-equipment",
+  ];
+
   const currentDistrict =
-    pathParts.length > 0
+    (city ? city.toLowerCase().replace(/\s+/g, "-") : "") ||
+    (pathParts.length > 0 && !staticRoutes.includes(pathParts[0].toLowerCase())
       ? pathParts[0]
-      : null;
+      : null);
+
   const handleChange = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -81,17 +98,10 @@ export default function ContactPage() {
     try {
       setSubmitting(true);
 
-      await addDoc(
-        collection(
-          db,
-          "websitesQueries",
-          "qlytein",
-          "contactQueries"
-        ),
-        {
-          ...form,
-          createdAt: new Date(),
-        }
+      await submitQuery("/api/contact-query", {
+        ...form,
+        createdAt: new Date().toISOString(),
+      }
       );
 
       toast.success(
@@ -114,27 +124,12 @@ export default function ContactPage() {
       setSubmitting(false);
     }
   };
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
   useEffect(() => {
     const loadDistrict = async () => {
       if (!currentDistrict) return;
 
       try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "qlytein",
-            "districts",
-            currentDistrict
-          )
-        );
+        const snap = await fetchSiteDoc(`district:${currentDistrict}`);
 
         if (snap.exists()) {
           setDistrictData(snap.data());
@@ -149,15 +144,7 @@ export default function ContactPage() {
   useEffect(() => {
     const loadContact = async () => {
       try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "qlytein",
-            "pages",
-            "contact"
-          )
-        );
+        const snap = await fetchSiteDoc("contact");
 
         if (snap.exists()) {
           setContactInfo(
@@ -174,42 +161,29 @@ export default function ContactPage() {
     loadContact();
   }, []);
 
+  const formatDistrictAddress = (data) => {
+    if (!data) return "";
+    if (data.address && String(data.address).trim()) return String(data.address).trim();
+    const parts = [data.district, data.state, "India"].filter(Boolean);
+    if (parts.length > 1) return parts.join(", ");
+    return "";
+  };
 
+  const defaultAddress =
+    "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, Ajmer-Delhi Bypass Rd, Jaipur, Rajasthan 302021, India";
 
-  const rawPhone = contactInfo.find(
-    (x) => x.label === "Phone Number"
-  )?.value;
-
-  const phone = rawPhone && rawPhone.trim() ? rawPhone : "9983123469";
-  const displayPhone = "+91 9983123469";
-
-  const email =
-    contactInfo.find(
-      (x) => x.label === "Email Address"
-    )?.value || "";
-
-  const displayEmail = email && email.trim() ? email : "rajbiosis@yahoo.in";
-
-  const address =
-    contactInfo.find(
-      (x) => x.label === "Office Address"
-    )?.value || "";
-
-  const hours =
-    contactInfo.find(
-      (x) => x.label === "Working Hours"
-    )?.value || "";
-
-  const defaultAddress = "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, on Ajmer-Delhi, 200 Feet Bypass Rd, Jaipur, Rajasthan 302021";
-
+  const phones = extractPhones(contactInfo);
+  const emails = extractEmails(contactInfo);
+  const address = getContactAddress(contactInfo);
+  const hours = getWorkingHours(contactInfo);
   const dynamicAddress =
-    districtData
-      ? `${districtData.district}, ${districtData.state}, India`
-      : (address && address.trim() ? address : defaultAddress);
-
-  const mapAddress = encodeURIComponent(
-    dynamicAddress
-  );
+    formatDistrictAddress(districtData) ||
+    address ||
+    defaultAddress;
+  const displayPhone = phones.length > 0 ? phones.join(", ") : "+91 9983123469";
+  const displayEmail = emails.length > 0 ? emails.join(", ") : "rajbiosis@yahoo.in";
+  const displayHours = hours || "Mon - Sat: 9:30 AM - 7:00 PM";
+  const mapAddress = encodeURIComponent(dynamicAddress);
   if (loading) {
     return (
       <section className="section-padding">
@@ -282,13 +256,13 @@ export default function ContactPage() {
                   icon: <Phone size={24} />,
                   title: "Phone Number",
                   value: displayPhone,
-                  href: "tel:+919983123469",
+                  href: `tel:${phones[0] || "+919983123469"}`,
                 },
                 {
                   icon: <Mail size={24} />,
                   title: "Email Address",
                   value: displayEmail,
-                  href: `mailto:${displayEmail}`,
+                  href: `mailto:${emails[0] || "rajbiosis@yahoo.in"}`,
                 },
                 {
                   icon: <MapPin size={24} />,
@@ -299,7 +273,7 @@ export default function ContactPage() {
                 {
                   icon: <Clock3 size={24} />,
                   title: "Working Hours",
-                  value: hours,
+                  value: displayHours,
                   href: null,
                 },
               ].map((item, index) => (
@@ -442,16 +416,7 @@ export default function ContactPage() {
                   className="w-full rounded-2xl border border-[#E5E7EB] bg-[#FFFCF3] px-5 py-4 text-[#1E293B] outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#D4A017] focus:bg-white focus:ring-4 focus:ring-[#F4C542]/20"
                 />
 
-                {/* Subject */}
 
-                <input
-                  type="text"
-                  name="subject"
-                  placeholder="Subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  className="w-full rounded-2xl border border-[#E5E7EB] bg-[#FFFCF3] px-5 py-4 text-[#1E293B] outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#D4A017] focus:bg-white focus:ring-4 focus:ring-[#F4C542]/20"
-                />
 
                 {/* Message */}
 

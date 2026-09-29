@@ -1,28 +1,20 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import toast from "react-hot-toast";
-
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import toast from "react-hot-toast";
 import {
-    FaPlay,
-    FaShareAlt,
-    FaWhatsapp,
-    FaFacebook,
-    FaInstagram,
-    FaLink,
+  FaPlay,
+  FaShareAlt,
+  FaLink,
+  FaWhatsapp,
+  FaFacebook,
+  FaInstagram,
 } from "react-icons/fa";
-
-import {
-    doc,
-    getDoc,
-    getDocs,
-    addDoc,
-    collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { extractPhones, extractEmails } from "@/lib/contact-utils";
+import { submitQuery, fetchSiteDoc } from "@/lib/site-data-client";
 import { fetchFullCatalog } from "@/lib/data-fetcher";
 import { downloadProductBrochure } from "@/lib/brochure-generator";
 
@@ -34,6 +26,9 @@ const makeSlug = (text = "") =>
         .replace(/\s+/g, "-");
 
 export default function ProductDetails({ slug, initialProduct = null, district = null }) {
+    const [contactInfo, setContactInfo] = useState([]);
+    const contactPhones = extractPhones(contactInfo);
+    const contactEmails = extractEmails(contactInfo);
     const [product, setProduct] = useState(initialProduct);
     const [loading, setLoading] = useState(!initialProduct);
     const [imageLoaded, setImageLoaded] = useState(false);
@@ -71,13 +66,6 @@ export default function ProductDetails({ slug, initialProduct = null, district =
         let isMounted = true;
 
         if (initialProduct && initialProduct.slug === slug) {
-            setProduct(initialProduct);
-            setLoading(false);
-            if (initialProduct.images?.length > 0) {
-                setSelectedImage(initialProduct.images[0]);
-            } else if (initialProduct.image) {
-                setSelectedImage(initialProduct.image);
-            }
             return;
         }
 
@@ -169,20 +157,13 @@ export default function ProductDetails({ slug, initialProduct = null, district =
         try {
             setSubmitting(true);
 
-            await addDoc(
-                collection(
-                    db,
-                    "websitesQueries",
-                    "qlytein",
-                    "productQueries"
-                ),
-                {
+            await submitQuery("/api/product-query", {
                     ...form,
                     productName: product.title,
                     productSlug: product.slug,
                     brand: product.brand || "",
                     model: product.model || "",
-                    createdAt: new Date(),
+                    createdAt: new Date().toISOString(),
                 }
             );
 
@@ -260,7 +241,7 @@ ${product?.desc}
 🌐 ${window.location.href}`;
 
         window.open(
-            `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+            `https://wa.me/${(contactPhones[0] || "").replace(/\D/g, "")}?text=${encodeURIComponent(shareText)}`,
             "_blank"
         );
     };
@@ -362,12 +343,12 @@ ${product?.desc}
                         <p className="text-slate-600 mb-8 leading-relaxed">
                             The requested product could not be found or may have been updated.
                         </p>
-                        <a
+                        <Link
                             href="/items"
                             className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] font-semibold text-white shadow-md hover:shadow-lg transition"
                         >
                             Browse All Products
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -609,11 +590,11 @@ ${product?.desc}
                                     </button>
 
                                     <a
-                                        href="tel:+919983123469"
+                                        href={`tel:${contactPhones[0] || ""}`}
                                         className="inline-flex items-center gap-3 rounded-2xl border border-[#D4A017]/30 bg-white px-6 py-3.5 font-semibold text-[#1E293B] shadow-sm transition-all duration-300 hover:bg-[#FEF3C7] hover:border-[#D4A017]"
                                     >
 
-                                        <span>📞 Call Us: +91 9983123469</span>
+                                        <span>📞 Call Us: {contactPhones.join(" / ")}</span>
 
                                     </a>
 

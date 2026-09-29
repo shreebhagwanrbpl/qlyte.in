@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { useState, useEffect } from "react";
+import { extractPhones, extractEmails, getContactAddress } from "@/lib/contact-utils";
+import { fetchSiteDoc } from "@/lib/site-data-client";
+
+
 import { fetchFullCatalog } from "@/lib/data-fetcher";
 import Link from "next/link";
 import Image from "next/image";
@@ -43,15 +45,7 @@ export default function Footer() {
   useEffect(() => {
     const loadContact = async () => {
       try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "qlytein",
-            "pages",
-            "contact"
-          )
-        );
+        const snap = await fetchSiteDoc("contact");
 
         if (snap.exists()) {
           setContactInfo(
@@ -92,15 +86,7 @@ export default function Footer() {
       if (!district) return;
 
       try {
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "qlytein",
-            "districts",
-            district
-          )
-        );
+        const snap = await fetchSiteDoc(`district:${district}`);
 
         if (snap.exists()) {
           setDistrictData(snap.data());
@@ -113,28 +99,24 @@ export default function Footer() {
     loadDistrict();
   }, [district]);
 
-  const rawPhone = contactInfo.find((x) => x.label === "Phone Number")?.value;
-  const phone = rawPhone && rawPhone.trim() ? rawPhone : "9983123469";
-  const displayPhone = "+91 9983123469";
+  const formatDistrictAddress = (data) => {
+    if (!data) return "";
+    if (data.address && String(data.address).trim()) return String(data.address).trim();
+    const parts = [data.district, data.state, "India"].filter(Boolean);
+    if (parts.length > 1) return parts.join(", ");
+    return "";
+  };
 
-  const email =
-    contactInfo.find(
-      (x) => x.label === "Email Address"
-    )?.value || "";
+  const defaultAddress =
+    "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, Ajmer-Delhi Bypass Rd, Jaipur, Rajasthan 302021, India";
 
-  const displayEmail = email && email.trim() ? email : "rajbiosis@yahoo.in";
-
-  const address =
-    contactInfo.find(
-      (x) => x.label === "Office Address"
-    )?.value || "";
-
-  const defaultAddress = "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, on Ajmer-Delhi, 200 Feet Bypass Rd, Jaipur, Rajasthan 302021";
-
+  const phones = extractPhones(contactInfo);
+  const emails = extractEmails(contactInfo);
+  const address = getContactAddress(contactInfo);
   const dynamicAddress =
-    districtData
-      ? `${districtData.district}, ${districtData.state}, India`
-      : (address && address.trim() ? address : defaultAddress);
+    formatDistrictAddress(districtData) ||
+    address ||
+    defaultAddress;
 
   const makeLink = (path) => {
     if (!district) return path;
@@ -391,11 +373,11 @@ export default function Footer() {
                 </div>
 
                 <a
-                  href="tel:+919983123469"
+                  href={`tel:${phones[0] || ""}`}
                   className="text-slate-300 hover:text-[#F4C542] transition font-medium"
                 >
 
-                  {displayPhone}
+                  {phones.join(" / ")}
 
                 </a>
 
@@ -410,11 +392,11 @@ export default function Footer() {
                 </div>
 
                 <a
-                  href={`mailto:${displayEmail}`}
+                  href={`mailto:${emails[0] || ""}`}
                   className="text-slate-300 hover:text-[#F4C542] transition font-medium break-all"
                 >
 
-                  {displayEmail}
+                  {emails.join(" / ")}
 
                 </a>
 

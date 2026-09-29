@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { fetchSiteDoc } from "@/lib/site-data-client";
+import PageBanner from "@/components/PageBanner";
+import SectionTitle from "@/components/SectionTitle";
+import ServiceCard from "@/components/ServiceCard";
+import CTASection from "@/components/CTASection";
 import {
   Microscope,
   FlaskConical,
@@ -10,16 +14,11 @@ import {
   Stethoscope,
   Wrench,
   Activity,
-  PhoneCall,
   CheckCircle,
+  PhoneCall,
 } from "lucide-react";
 
-import PageBanner from "@/components/PageBanner";
-import SectionTitle from "@/components/SectionTitle";
-import ServiceCard from "@/components/ServiceCard";
-import CTASection from "@/components/CTASection";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+const defaultServices = [];
 
 export default function ServicesPage() {
   const [services, setServices] = useState([]);
@@ -34,39 +33,10 @@ export default function ServicesPage() {
     <Activity key="6" size={30} />,
   ];
 
-  const defaultServices = [
-    {
-      title: "Medical Machine Supply",
-      desc: "Authorized supply of CBC counters, hematology systems, biochemistry analyzers, blood gas units, and pathology laboratory instruments.",
-    },
-    {
-      title: "On-Site Setup & Testing",
-      desc: "Professional physical installation and accuracy configuration by experienced biomedical technicians before your first patient test.",
-    },
-    {
-      title: "Annual Maintenance Plans (AMC)",
-      desc: "Scheduled preventive servicing contracts to protect your machinery from sudden breakdowns and ensure long operational life.",
-    },
-    {
-      title: "Calibration & Accuracy Audits",
-      desc: "Routine calibration checks meeting essential healthcare guidelines to guarantee reliable patient diagnostic results.",
-    },
-    {
-      title: "Operator & Staff Training",
-      desc: "Practical hands-on training sessions for lab technicians and doctors to operate equipment safely and efficiently.",
-    },
-    {
-      title: "Emergency Repairs & Spares",
-      desc: "Fast troubleshooting assistance and genuine replacement spare parts across India to minimize laboratory downtime.",
-    },
-  ];
-
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "qlytein", "pages", "services")
-        );
+        const snap = await fetchSiteDoc("services");
 
         if (snap.exists() && snap.data().services?.length) {
           setServices(snap.data().services);
@@ -105,7 +75,7 @@ export default function ServicesPage() {
               Complete Lifecycle Support
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black text-[#1E293B] leading-tight">
-              Complete Care Throughout Your Equipment's Lifecycle
+              Complete Care Throughout Your Equipment&apos;s Lifecycle
             </h2>
             <p className="mt-5 text-base sm:text-lg leading-8 text-slate-600">
               At <strong>Rajbiosis Private Limited</strong>, our relationship with clinics and hospitals goes far beyond machinery delivery. We assist you with complete operational guidance and technician support whenever you need help.
