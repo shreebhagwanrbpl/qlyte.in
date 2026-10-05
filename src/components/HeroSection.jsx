@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { fetchSiteDoc } from "@/lib/site-data-client";
 import {
   ShieldCheck,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   ArrowRight,
@@ -22,6 +23,7 @@ export default function HeroSection({ city }) {
     description: "",
     button1Text: "",
     button2Text: "",
+    badgeText: "",
   });
 
   const heroSlides = [
@@ -29,41 +31,44 @@ export default function HeroSection({ city }) {
       id: 1,
       image: "/hero-1.png",
       tag: "Biochemistry & Hematology",
-      title: "Fast & Accurate Blood Testing Systems",
-      subtitle: "Fully automated analyzers engineered for smooth daily laboratory testing.",
+      title: "Fast & Accurate Testing Systems",
+      subtitle: "Automated clinical analyzers engineered for seamless daily diagnostics.",
     },
     {
       id: 2,
       image: "/hero-2.png",
-      tag: "Critical Care Solutions",
-      title: "Reliable Diagnostic Machinery",
-      subtitle: "Built for clinical accuracy in hospitals, ICUs, and health centers.",
+      tag: "Critical Care Diagnostic",
+      title: "High Precision Lab Machinery",
+      subtitle: "Calibrated for dependable accuracy across hospitals and testing centers.",
     },
     {
       id: 3,
       image: "/hero-3.png",
-      tag: "Lab Care & Support",
-      title: "Complete Engineering Assistance",
-      subtitle: "Direct supply with installation, warranty, maintenance, and expert support.",
+      tag: "Engineering & Support",
+      title: "Complete Technical Assistance",
+      subtitle: "Direct delivery, certified installation, warranty, and lifetime support.",
     },
   ];
 
   useEffect(() => {
+    let isMounted = true;
     const fetchHeroData = async () => {
       try {
         const snap = await fetchSiteDoc("home");
-
-        if (snap.exists()) {
-          setHeroData(snap.data());
+        if (snap && typeof snap.exists === "function" && snap.exists() && isMounted) {
+          setHeroData(snap.data() || {});
         }
       } catch (error) {
         console.error("Error fetching hero data:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchHeroData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Auto slide effect every 5 seconds
@@ -91,117 +96,137 @@ export default function HeroSection({ city }) {
     return districtSlug ? `/${districtSlug}${path}` : path;
   };
 
-  const displayTitle = heroData.title || "Modern Medical & Lab Technology Made Simple for Every Clinic";
-  const displayDesc = heroData.description || "We provide high-precision diagnostic instruments, fast laboratory setups, and dependable technical care across India.";
+  const displayTitle =
+    heroData.title ||
+    "Modern Medical & Diagnostic Equipment for Modern Labs";
+
+  const displayDesc =
+    heroData.description ||
+    "Providing high-precision electrolyte analyzers, biochemistry systems, and dependable technical care for hospitals and diagnostic centers.";
+
+  const primaryBtn = heroData.button1Text || "Explore Equipment";
+  const secondaryBtn = heroData.button2Text || "Contact Us";
 
   return (
-    <section className="relative overflow-hidden bg-[#FFFDF5] pt-12 pb-20 md:pt-16 md:pb-28">
-
-      {/* Background Glows */}
+    <section className="relative overflow-hidden bg-[#FFFDF5] pt-6 pb-12 sm:pt-10 sm:pb-16 lg:pt-12 lg:pb-20">
+      {/* Background Subtle Ambience */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[500px] rounded-full bg-[#FFE8A3]/40 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-[#FFF0B8] blur-[120px]" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[500px] rounded-full bg-amber-100/40 blur-[100px]" />
+        <div className="absolute top-1/2 right-0 h-[280px] w-[280px] rounded-full bg-yellow-100/30 blur-[90px]" />
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
-              "linear-gradient(#D6C17D 1px, transparent 1px), linear-gradient(90deg,#D6C17D 1px, transparent 1px)",
-            backgroundSize: "50px 50px",
+              "linear-gradient(#D4A017 1px, transparent 1px), linear-gradient(90deg,#D4A017 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
           }}
         />
       </div>
 
       <div className="relative z-10 container-custom">
-
-        {/* Top Tagline Badge */}
-        <div className="flex justify-center mb-8">
-          <div className="inline-flex items-center gap-3 rounded-full border border-yellow-200 bg-white/80 backdrop-blur-md px-5 py-2 shadow-[0_15px_40px_rgba(212,175,55,.15)]">
-            <ShieldCheck size={18} className="text-[#C89200]" />
-            <span className="text-sm font-bold text-[#C89200]">
-              Rajbiosis Private Limited • Trusted Biomedical Systems
-            </span>
-          </div>
-        </div>
-
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-
-          {/* Left Text Area */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Text Column */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             className="lg:col-span-6 text-center lg:text-left"
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight text-[#1E293B]">
+            {/* Top Pill Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/60 bg-amber-50/90 px-3.5 py-1.5 text-xs font-semibold text-amber-900 shadow-sm backdrop-blur-md mb-4 sm:mb-5">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              </span>
+              <ShieldCheck size={14} className="text-amber-700" />
+              <span>
+                {heroData.badgeText || "Certified Diagnostic & Biomedical Equipment"}
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-black tracking-tight text-slate-900 leading-[1.18]">
               {loading ? (
-                <div className="animate-pulse space-y-4">
-                  <div className="h-12 w-[85%] rounded-xl bg-gray-200"></div>
-                  <div className="h-12 w-[65%] rounded-xl bg-gray-200"></div>
+                <div className="animate-pulse space-y-3">
+                  <div className="h-10 w-[90%] rounded-lg bg-amber-100/60 mx-auto lg:mx-0" />
+                  <div className="h-10 w-[70%] rounded-lg bg-amber-100/60 mx-auto lg:mx-0" />
                 </div>
               ) : (
                 <>
                   {displayTitle}
                   {city && (
-                    <span className="block mt-3 text-2xl lg:text-3xl font-bold text-[#C89200]">
-                      Serving {city}
+                    <span className="block mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold text-amber-600">
+                      in {city}
                     </span>
                   )}
                 </>
               )}
             </h1>
 
-            <p className="mt-6 text-base sm:text-lg leading-8 text-slate-700 max-w-2xl mx-auto lg:mx-0">
+            {/* Description */}
+            <p className="mt-4 text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
               {loading ? (
-                <span className="animate-pulse block h-16 w-full rounded-xl bg-gray-200" />
+                <span className="animate-pulse block h-14 w-full rounded-lg bg-amber-100/40" />
               ) : (
                 <>
                   {displayDesc}
                   {city && (
-                    <> delivering trusted healthcare equipment across <strong>{city}</strong>.</>
+                    <> Dedicated service and fast delivery across <strong>{city}</strong>.</>
                   )}
                 </>
               )}
             </p>
 
+            {/* Quick Micro-Trust Badges */}
+            <div className="mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs sm:text-sm font-medium text-slate-700">
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                Direct Manufacturer Warranty
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                Certified On-Site Setup
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                24/7 Service Support
+              </span>
+            </div>
+
             {/* CTA Buttons */}
-            <div className="mt-10 flex flex-wrap justify-center lg:justify-start gap-4">
-              {heroData.button1Text ? (
-                <Link href={makeLink("/items")}>
-                  <button className="group flex h-14 items-center gap-3 rounded-2xl bg-gradient-to-r from-[#B88700] via-[#D4A017] to-[#F4C542] px-8 font-bold text-white shadow-[0_15px_40px_rgba(212,175,55,.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_20px_50px_rgba(212,175,55,.45)]">
-                    <span>{heroData.button1Text}</span>
-                    <ArrowRight size={18} className="transition group-hover:translate-x-1" />
-                  </button>
-                </Link>
-              ) : null}
-              {heroData.button2Text ? (
-                <Link href={makeLink("/contact")}>
-                  <button className="h-14 rounded-2xl border border-[#D4A017]/30 bg-white px-8 font-bold text-slate-800 shadow-sm transition-all duration-300 hover:bg-[#FEF3C7] hover:border-[#D4A017]">
-                    {heroData.button2Text}
-                  </button>
-                </Link>
-              ) : null}
+            <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
+              <Link href={makeLink("/items")}>
+                <button className="group inline-flex h-12 sm:h-13 items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 px-6 sm:px-7 font-bold text-white shadow-[0_8px_20px_rgba(217,119,6,0.25)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_12px_26px_rgba(217,119,6,0.35)] active:scale-[0.98]">
+                  <span>{primaryBtn}</span>
+                  <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
+              </Link>
+              <Link href={makeLink("/contact")}>
+                <button className="inline-flex h-12 sm:h-13 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/95 px-6 sm:px-7 font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-amber-50/60 hover:border-amber-400 hover:text-amber-900 active:scale-[0.98]">
+                  {secondaryBtn}
+                </button>
+              </Link>
             </div>
           </motion.div>
 
-          {/* Right Image Carousel */}
+          {/* Right Showcase Carousel */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.7 }}
             className="lg:col-span-6 relative"
           >
-            <div className="relative overflow-hidden rounded-[36px] border border-[#F4C542]/30 bg-white shadow-[0_30px_80px_rgba(15,23,42,.14)] group">
-
-              {/* Slide Images */}
-              <div className="relative h-[340px] sm:h-[420px] lg:h-[460px] w-full">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-amber-200/60 bg-white shadow-[0_20px_50px_rgba(15,23,42,0.08)] group">
+              {/* Slide Viewport */}
+              <div className="relative h-[270px] sm:h-[340px] lg:h-[380px] w-full bg-slate-900">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentSlide}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.6 }}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.5 }}
                     className="absolute inset-0"
                   >
                     <Image
@@ -212,19 +237,19 @@ export default function HeroSection({ city }) {
                       className="object-cover"
                     />
 
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/30 to-transparent" />
+                    {/* Subtle Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-transparent" />
 
-                    {/* Caption Overlay */}
-                    <div className="absolute bottom-6 left-6 right-6 z-10 text-white">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F4C542] px-3.5 py-1 text-xs font-bold text-[#0F172A] shadow-md mb-2">
-                        <Sparkles size={13} />
+                    {/* Bottom Caption */}
+                    <div className="absolute bottom-5 left-5 right-5 z-10 text-white">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-slate-950 shadow-sm mb-2">
+                        <Sparkles size={12} />
                         {heroSlides[currentSlide].tag}
                       </span>
-                      <h3 className="text-xl sm:text-2xl font-black leading-tight text-white drop-shadow-md">
+                      <h3 className="text-lg sm:text-xl font-black leading-tight text-white drop-shadow-sm">
                         {heroSlides[currentSlide].title}
                       </h3>
-                      <p className="mt-1 text-xs sm:text-sm text-slate-200 line-clamp-2 leading-relaxed drop-shadow">
+                      <p className="mt-1 text-xs sm:text-sm text-slate-200 line-clamp-2 leading-relaxed opacity-90">
                         {heroSlides[currentSlide].subtitle}
                       </p>
                     </div>
@@ -232,66 +257,42 @@ export default function HeroSection({ city }) {
                 </AnimatePresence>
               </div>
 
-              {/* Prev / Next Arrows */}
+              {/* Prev / Next Navigation */}
               <button
                 onClick={prevSlide}
                 aria-label="Previous Slide"
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#0F172A]/60 text-white backdrop-blur-md transition-all hover:bg-[#F4C542] hover:text-[#0F172A] hover:scale-110"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/60 text-white backdrop-blur-md opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:bg-amber-500 hover:text-slate-950 hover:scale-105"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={18} />
               </button>
 
               <button
                 onClick={nextSlide}
                 aria-label="Next Slide"
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#0F172A]/60 text-white backdrop-blur-md transition-all hover:bg-[#F4C542] hover:text-[#0F172A] hover:scale-110"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-slate-900/60 text-white backdrop-blur-md opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:bg-amber-500 hover:text-slate-950 hover:scale-105"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={18} />
               </button>
 
-              {/* Pagination Dots */}
-              <div className="absolute top-5 right-6 z-20 flex items-center gap-2 rounded-full bg-[#0F172A]/50 backdrop-blur-md px-3 py-1.5 border border-white/20">
+              {/* Top Dots Indicator */}
+              <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 rounded-full bg-slate-900/60 backdrop-blur-md px-2.5 py-1.5 border border-white/15">
                 {heroSlides.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
                     aria-label={`Go to slide ${idx + 1}`}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      currentSlide === idx ? "w-7 bg-[#F4C542]" : "w-2.5 bg-white/50 hover:bg-white"
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      currentSlide === idx
+                        ? "w-6 bg-amber-400"
+                        : "w-2 bg-white/40 hover:bg-white"
                     }`}
                   />
                 ))}
               </div>
-
             </div>
           </motion.div>
-
         </div>
-
-        {/* Stats Row */}
-        <div className="mt-16 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
-          {[
-            ["10+", "Years Supporting Healthcare"],
-            ["500+", "Machines Installed"],
-            ["200+", "Active Medical Centers"],
-            ["100%", "Quality Assurance"],
-          ].map(([value, label]) => (
-            <div
-              key={label}
-              className="rounded-3xl border border-[#F4C542]/20 bg-white/80 p-6 backdrop-blur-md text-center shadow-[0_15px_35px_rgba(212,175,55,.12)] transition hover:-translate-y-1 hover:shadow-lg"
-            >
-              <h3 className="text-3xl sm:text-4xl font-black text-[#C89200]">
-                {value}
-              </h3>
-              <p className="mt-1 text-xs sm:text-sm font-semibold text-slate-600">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-
       </div>
-
     </section>
   );
 }

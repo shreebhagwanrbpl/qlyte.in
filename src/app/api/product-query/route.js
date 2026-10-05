@@ -1,17 +1,1 @@
-import { NextResponse } from "next/server";
-import { submitAdminQuery } from "@/lib/admin-api";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
-
-export async function POST(request) {
-  try {
-    const payload = await request.json();
-    const data = await submitAdminQuery("api/product-query", payload);
-    return NextResponse.json({ success: true, ...data });
-  } catch (error) {
-    console.error("Product query error:", error);
-    return NextResponse.json({ success: false, error: "Unable to submit product query" }, { status: 500 });
-  }
-}
+import { NextResponse } from "next/server";import { submitAdminQuery } from "@/lib/admin-api";export const runtime="nodejs";export const dynamic="force-dynamic";export const revalidate=0;export const fetchCache="force-no-store";export async function POST(req){try{const body=await req.json();const data=await submitAdminQuery("/api/product-query",body);return NextResponse.json({success:true,...data},{headers:{"Cache-Control":"no-store"}})}catch(e){console.error("[api/product-query]",e);return NextResponse.json({success:false,error:e.message||"Request failed"},{status:500})}}

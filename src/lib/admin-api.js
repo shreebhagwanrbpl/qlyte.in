@@ -1,57 +1,10 @@
-// src/lib/admin-api.js
-import { WEBSITE_ID } from "./catalog-utils.js";
-
-export const ADMIN_API_BASE_URL =
-  process.env.ADMIN_API_BASE_URL ||
-  process.env.ADMIN_API_URL ||
-  process.env.SQLITE_ADMIN_API_URL ||
-  "https://admin.rajbiosis.app";
-
+import { WEBSITE_ID, COMPANY_ID, normalizeDomainId, resolveImageUrl, makeSlug } from "./catalog-utils.js";
+export const ADMIN_API_BASE_URL = process.env.NEXT_PUBLIC_ADMIN_API_BASE_URL || process.env.ADMIN_API_BASE_URL || process.env.ADMIN_API_URL || process.env.SQLITE_ADMIN_API_URL || "https://admin.rajbiosis.app";
 export const ADMIN_API_LOCAL_URL = "http://localhost:3000";
-
-function joinUrl(base, pathname) {
-  return `${String(base).replace(/\/+$/, "")}/${String(pathname).replace(/^\/+/, "")}`;
-}
-
-export async function adminFetch(pathname, options = {}) {
-  const url = joinUrl(ADMIN_API_BASE_URL, pathname);
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      Accept: "application/json",
-      ...(options.headers || {}),
-    },
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    throw new Error(`Admin API ${response.status}: ${response.statusText}`);
-  }
-  return response;
-}
-
-export async function submitAdminQuery(endpoint, payload) {
-  const body = JSON.stringify({
-    ...payload,
-    websiteId: WEBSITE_ID,
-  });
-
-  const candidates = [ADMIN_API_BASE_URL];
-  if (ADMIN_API_BASE_URL !== ADMIN_API_LOCAL_URL) candidates.push(ADMIN_API_LOCAL_URL);
-
-  let lastError;
-  for (const base of candidates) {
-    try {
-      const response = await fetch(joinUrl(base, endpoint), {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body,
-        cache: "no-store",
-      });
-      if (response.ok) return response.json().catch(() => ({ success: true }));
-      lastError = new Error(`Admin API ${response.status}: ${response.statusText}`);
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  throw lastError || new Error("Unable to submit query");
-}
+function buildUrl(pathname) { const base = ADMIN_API_BASE_URL.replace(/\/$/, ""); const u = new URL(pathname.startsWith("http") ? pathname : `${base}${pathname.startsWith("/") ? "" : "/"}${pathname}`); u.searchParams.set("_t", String(Date.now())); return u.toString(); }
+export async function adminFetch(pathname, options = {}) { const r = await fetch(buildUrl(pathname), { ...options, cache: "no-store", next: { revalidate: 0 }, headers: { Accept: "application/json", "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", ...(options.headers || {}) } }); if (!r.ok) { const t = await r.text().catch(() => ""); throw new Error(t || `Admin API ${r.status}: ${r.statusText}`) } return r; }
+export async function adminJson(pathname) { return (await adminFetch(pathname)).json(); }
+export async function submitAdminQuery(endpoint, payload = {}) { const r = await adminFetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, websiteId: payload.websiteId || WEBSITE_ID, companyId: payload.companyId || COMPANY_ID, createdAt: payload.createdAt || new Date().toISOString() }) }); return r.json().catch(() => ({ success: true })); }
+export async function fetchLiveCatalogFromVPS(websiteId = WEBSITE_ID) { const target = normalizeDomainId(websiteId || WEBSITE_ID); const raw = await adminJson(`/api/catalog?websiteId=${encodeURIComponent(target)}&companyId=${encodeURIComponent(COMPANY_ID)}`); const list = Array.isArray(raw) ? raw : (Array.isArray(raw?.products) ? raw.products : Array.isArray(raw?.data) ? raw.data : Array.isArray(raw?.catalog) ? raw.catalog : []); return list.map((p, i) => { const title = p?.title || p?.name || `Biomedical Equipment ${i + 1}`; const slug = p?.slug || p?.productSlug || makeSlug(title); const image = resolveImageUrl(p?.image || p?.imageUrl || (Array.isArray(p?.images) ? p.images[0] : "")) || "/logo.png"; const images = Array.isArray(p?.images) && p.images.length ? p.images.map(resolveImageUrl).filter(Boolean) : [image]; return { ...p, id: p?.id || p?.uid || p?.productId || `${slug}-${i}`, uid: p?.uid || p?.id || p?.productId || `${slug}-${i}`, title, name: title, slug, image, images, video: p?.video ? resolveImageUrl(p.video) : p?.video || "", pdf: p?.pdf ? resolveImageUrl(p.pdf) : p?.pdf || "" }; }); }
+export async function fetchLiveSiteDataFromVPS(websiteId = WEBSITE_ID, pageOrType = "home", extra = {}) { const target = normalizeDomainId(websiteId || WEBSITE_ID); const p = new URLSearchParams({ websiteId: target, companyId: COMPANY_ID, type: pageOrType, page: pageOrType }); if (extra?.district) p.set("district", extra.district); const raw = await adminJson(`/api/site-data?${p.toString()}`); if (pageOrType === "districts") return Array.isArray(raw) ? raw : (raw?.districts || raw?.data || []); return raw?.data !== undefined ? raw.data : raw; }
+export async function postLiveFirestore(path, data) { return submitAdminQuery(String(path || "").includes("productQueries") ? "/api/product-query" : "/api/contact-query", data); }
